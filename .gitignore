@@ -161,3 +161,8 @@ fabric.properties
 /Assets/NatCorder/*
 # Leave NatCorderReadme to show existence
 !/Assets/NatCorder/README.*
+
+# Ignore Paid UMod2.0 Files
+/Assets/UMod/*
+# Leave UMod2.0 Readme to show existence
+!/Assets/UMod/README.*

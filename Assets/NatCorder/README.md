@@ -1,4 +1,4 @@
-#NatCorder
+# NatCorder
 NatCorder must be installed for this project to work. Natcorder is a paid unity asset and could not be added to git.
 NatCorder can be found here: https://assetstore.unity.com/packages/tools/integration/natcorder-video-recording-api-102645
 
