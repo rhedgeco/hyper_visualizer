@@ -9,14 +9,21 @@ namespace HyperCore
 {
     public class HyperCoreManager : MonoBehaviour
     {
-        [SerializeField] private MainRenderer _mainRenderer;
+        [SerializeField] private MainRenderer mainRenderer;
         [SerializeField] private int fps = 60;
-        [SerializeField] private AudioClip _testAudio; //TODO: Replace with actual audio import
+        [SerializeField] private AudioClip testAudio; //TODO: Replace with actual audio import
 
         private static HyperCore Core { get; } = new HyperCore();
+
         public static long CurrentFrame { get; private set; }
-        
         public static float DeltaTime { get; private set; }
+
+        public enum UpdateType
+        {
+            Early,
+            Default,
+            Late
+        }
 
         public static void PushFrame(long frameNumber)
         {
@@ -25,15 +32,30 @@ namespace HyperCore
             CurrentFrame = frameNumber;
         }
 
-        public static void ConnectFrameUpdate(UnityAction<HyperValues> method)
+        public static void ConnectFrameUpdate(UnityAction<HyperValues> method,
+            UpdateType updateType = UpdateType.Default)
         {
-            Core.UpdateFrame.AddListener(method);
+            switch (updateType)
+            {
+                case UpdateType.Early:
+                    Core.BeginFrame.AddListener(method);
+                    break;
+                case UpdateType.Late:
+                    Core.EndFrame.AddListener(method);
+                    break;
+                default:
+                    Core.UpdateFrame.AddListener(method);
+                    break;
+            }
         }
 
         private void UpdateFrame()
         {
+            HyperValues values = new HyperValues(0f, 0f, new float[2], 1f);
             DeltaTime = 0f; //TODO: Adjust delta
-            Core.UpdateFrame.Invoke(new HyperValues(0f, 0f, new float[2], 1f));
+            Core.BeginFrame.Invoke(values);
+            Core.UpdateFrame.Invoke(values);
+            Core.EndFrame.Invoke(values);
         }
 
         public void RenderFootage(float length)
@@ -43,13 +65,13 @@ namespace HyperCore
 
         private IEnumerator RenderRoutine(float length)
         {
-            int audioSamples = _testAudio.frequency;
-            int channels = _testAudio.channels;
-            float[] samples = new float[_testAudio.samples * channels];
-            _testAudio.GetData(samples, 0);
+            int audioSamples = testAudio.frequency;
+            int channels = testAudio.channels;
+            float[] samples = new float[testAudio.samples * channels];
+            testAudio.GetData(samples, 0);
             int samplesPerFrame = audioSamples / fps;
 
-            MP4Recorder recorder = new MP4Recorder(_mainRenderer.Width, _mainRenderer.Height, fps, audioSamples,
+            MP4Recorder recorder = new MP4Recorder(mainRenderer.Width, mainRenderer.Height, fps, audioSamples,
                 channels, s => { Debug.Log(s); });
             FixedIntervalClock clock = new FixedIntervalClock(fps, false);
 
@@ -57,7 +79,7 @@ namespace HyperCore
             {
                 yield return new WaitForEndOfFrame();
                 long timestamp = clock.Timestamp;
-                Texture2D fTex = _mainRenderer.GetFrame(true);
+                Texture2D fTex = mainRenderer.GetFrame(true);
                 float[] commitSamples = GetPartialSampleArray(samples, samplesPerFrame * frame, samplesPerFrame);
                 recorder.CommitFrame(fTex.GetPixels32(), timestamp);
                 recorder.CommitSamples(commitSamples, timestamp);
