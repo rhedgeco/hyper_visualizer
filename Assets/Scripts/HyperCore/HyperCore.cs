@@ -17,7 +17,7 @@ namespace HyperCore
 
         private void DebugHyperEvents(HyperValues values)
         {
-            Debug.Log($"Frame Time : {values.Time}" +
+            Debug.Log($"Frame Time : {values.Time}\n" +
                       $"Frame Amplitude : {values.Amplitude}\n" +
                       $"Frame SpectrumCount : {values.Spectrum.Length}\n" +
                       $"Frame Hyper Value : {values.HyperValue}");
