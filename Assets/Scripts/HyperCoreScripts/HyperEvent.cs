@@ -1,6 +1,6 @@
 ﻿using UnityEngine.Events;
 
-namespace HyperCore
+namespace HyperCoreScripts
 {
     public class HyperEvent : UnityEvent<HyperValues>
     {

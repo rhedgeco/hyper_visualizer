@@ -1,24 +1,29 @@
-﻿using System.IO;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
 
-namespace HyperCore
+namespace HyperCoreScripts
 {
     [RequireComponent(typeof(Camera))]
     public class MainRenderer : MonoBehaviour
     {
-        private Camera _mainCamera;
-        
-        [SerializeField] private RawImage _imageDisplay;
+        private static MainRenderer _instance = null;
 
-        public int Width => _mainCamera.targetTexture.width;
-        public int Height => _mainCamera.targetTexture.height;
+        private static Camera _mainCamera;
+        public static int Width => _mainCamera.targetTexture.width;
+        public static int Height => _mainCamera.targetTexture.height;
+
+        [SerializeField] private RawImage _imageDisplay;
 
         private void Awake()
         {
+            if (_instance == null) _instance = this;
+            if (_instance != this) Destroy(_instance);
+            DontDestroyOnLoad(_instance);
+
             _mainCamera = GetComponent<Camera>();
-            _mainCamera.targetTexture = new RenderTexture(1920,1080,24,RenderTextureFormat.Default, RenderTextureReadWrite.Linear);
+            _mainCamera.targetTexture = new RenderTexture(1920, 1080, 24, RenderTextureFormat.Default,
+                RenderTextureReadWrite.Linear);
             _imageDisplay.texture = _mainCamera.targetTexture;
         }
 
@@ -27,19 +32,19 @@ namespace HyperCore
             RenderFrame();
         }
 
-        public void RenderFrame()
+        public static void RenderFrame()
         {
             _mainCamera.Render();
         }
 
-        public Texture2D GetFrame(bool forceRender = false)
+        public static Texture2D GetFrame(bool forceRender = false)
         {
-            if(forceRender) RenderFrame();
+            if (forceRender) RenderFrame();
             return RenderTextureToTexture2D(_mainCamera.targetTexture);
         }
 
         // Converts a RenderTexture to Texture2D
-        private Texture2D RenderTextureToTexture2D(RenderTexture rendTex)
+        private static Texture2D RenderTextureToTexture2D(RenderTexture rendTex)
         {
             Texture2D tex = new Texture2D(rendTex.width, rendTex.height, TextureFormat.RGBA32, false);
             RenderTexture.active = rendTex;
