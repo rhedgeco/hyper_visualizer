@@ -229,18 +229,18 @@ namespace HyperCoreScripts
         private IEnumerator RenderRoutine()
         {
             AudioClip clip = _source.clip;
-            float length = clip.length;
-            int audioSamples = clip.frequency;
+            float length = 5;
             int channels = clip.channels;
+            int audioSamples = clip.frequency;
             float[] samples = new float[clip.samples * channels];
             clip.GetData(samples, 0);
-            int samplesPerFrame = audioSamples / fps;
+            int samplesPerFrame = audioSamples / fps * channels;
             
             StatusController.UpdateStatus("Rendering HyperVideo");
 
             MP4Recorder recorder = new MP4Recorder(MainRenderer.Width, MainRenderer.Height, fps, audioSamples,
                 channels, s => { Debug.Log(s); });
-            FixedIntervalClock clock = new FixedIntervalClock(fps, false);
+            FixedIntervalClock clock = new FixedIntervalClock(fps);
 
             for (int frame = 0; frame <= length * fps; frame++)
             {
@@ -252,7 +252,6 @@ namespace HyperCoreScripts
                 recorder.CommitFrame(fTex.GetPixels32(), timestamp);
                 recorder.CommitSamples(commitSamples, timestamp);
                 DestroyImmediate(fTex);
-                clock.Tick();
                 Debug.Log($"Generated Frame {frame}/{(int) (length * fps)}");
                 StatusController.UpdateStatus($"Generated Frame {frame}/{(int) (length * fps)}");
             }
