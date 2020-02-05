@@ -25,6 +25,7 @@ namespace HyperCoreScripts
             _mainCamera.targetTexture = new RenderTexture(1920, 1080, 24, RenderTextureFormat.Default,
                 RenderTextureReadWrite.Linear);
             _imageDisplay.texture = _mainCamera.targetTexture;
+            _mainCamera.enabled = false;
         }
 
         private void Start()

@@ -160,3 +160,6 @@ fabric.properties
 # Ignore Paid Plugins but leave README files
 /Assets/Plugins/Paid/*/*
 !/Assets/Plugins/Paid/*/README.*
+
+# ignore idea directory
+/.idea/
