@@ -164,11 +164,11 @@ namespace HyperCoreScripts
                 StatusController.UpdateStatus("Cannot read audio file.");
                 yield break;
             }
-            
+
             StatusController.UpdateStatus($"Loading wav file : {Path.GetFileName(path)}");
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
-            
+
             List<float> sampleList = new List<float>();
             float[] sampleFrame;
             float timeCheck = Time.realtimeSinceStartup;
@@ -177,14 +177,15 @@ namespace HyperCoreScripts
                 sampleList.AddRange(sampleFrame);
                 if (Time.realtimeSinceStartup > timeCheck + 0.5)
                 {
-                    StatusController.UpdateStatus($"Loaded \t{(int)((float)reader.Position/reader.Length*100)}%");
+                    StatusController.UpdateStatus($"Loaded \t{(int) ((float) reader.Position / reader.Length * 100)}%");
                     timeCheck = Time.realtimeSinceStartup;
                     yield return null;
                 }
             }
 
             float[] samples = sampleList.ToArray();
-            AudioClip clip = AudioClip.Create(Path.GetFileName(path), samples.Length / reader.WaveFormat.Channels,
+            AudioClip clip = AudioClip.Create(Path.ChangeExtension(Path.GetFileName(path), ""),
+                samples.Length / reader.WaveFormat.Channels,
                 reader.WaveFormat.Channels,
                 reader.WaveFormat.SampleRate, false);
             clip.SetData(samples, 0);
@@ -223,10 +224,15 @@ namespace HyperCoreScripts
 
         public void RenderFootage()
         {
-            StartCoroutine(RenderRoutine());
+            string path = StandaloneFileBrowser.SaveFilePanel("Render To...", "", _source.clip.name, new []
+            {
+                new ExtensionFilter("Video File", "mp4"), 
+            });
+            if (path == null) return;
+            StartCoroutine(RenderRoutine(path));
         }
 
-        private IEnumerator RenderRoutine()
+        private IEnumerator RenderRoutine(string outputPath)
         {
             AudioClip clip = _source.clip;
             float length = clip.length;
@@ -235,11 +241,29 @@ namespace HyperCoreScripts
             float[] samples = new float[clip.samples * channels];
             clip.GetData(samples, 0);
             int samplesPerFrame = audioSamples / fps * channels;
-            
+
             StatusController.UpdateStatus("Rendering HyperVideo");
 
-            MP4Recorder recorder = new MP4Recorder(MainRenderer.Width, MainRenderer.Height, fps, audioSamples,
-                channels, s => { Debug.Log(s); });
+            MP4Recorder recorder = new MP4Recorder(MainRenderer.Width, MainRenderer.Height, fps, audioSamples,channels,
+                s =>
+                {
+                    // Set up to move file to output location after rendering
+                    if (!File.Exists(s))
+                    {
+                        Debug.LogError("ERROR: Could not locate saved file. Contact dev.");
+                        StatusController.UpdateStatus("ERROR: Could not locate saved file. Contact dev.");
+                        return;
+                    }
+
+                    if (!Directory.Exists(Path.GetDirectoryName(outputPath)))
+                    {
+                        Debug.LogError("ERROR: Output path is not accessible.");
+                        StatusController.UpdateStatus("ERROR: Output path is not accessible.");
+                        return;
+                    }
+                    
+                    File.Move(s,outputPath);
+                });
             FixedIntervalClock clock = new FixedIntervalClock(fps);
 
             for (int frame = 0; frame <= length * fps; frame++)
