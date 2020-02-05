@@ -2083,7 +2083,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6a399fa718c4278bc0de29108c50185, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fps: 1
+  fps: 30
   timelineSlider: {fileID: 1260866074}
   startupAudio: {fileID: 8300000, guid: 33897cc01ea3bd749866f6a67a814cc5, type: 3}
   arrowSkipAmount: 5
