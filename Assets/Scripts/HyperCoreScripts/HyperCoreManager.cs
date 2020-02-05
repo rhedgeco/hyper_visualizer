@@ -229,7 +229,7 @@ namespace HyperCoreScripts
         private IEnumerator RenderRoutine()
         {
             AudioClip clip = _source.clip;
-            float length = 5;
+            float length = clip.length;
             int channels = clip.channels;
             int audioSamples = clip.frequency;
             float[] samples = new float[clip.samples * channels];
@@ -263,6 +263,7 @@ namespace HyperCoreScripts
         private float[] GetPartialSampleArray(float[] samples, int startIndex, int length)
         {
             float[] partial = new float[length];
+            if (samples.Length - startIndex < length) length = samples.Length - startIndex;
             Array.Copy(samples, startIndex, partial, 0, length);
             return partial;
         }
