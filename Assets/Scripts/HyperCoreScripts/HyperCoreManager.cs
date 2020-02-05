@@ -112,6 +112,11 @@ namespace HyperCoreScripts
 
         public void ImportAudioFromFile()
         {
+            StartCoroutine(ImportAudioRoutine());
+        }
+
+        private IEnumerator ImportAudioRoutine()
+        {
             string path = StandaloneFileBrowser.OpenFilePanel("Open Audio File", "", new[]
             {
                 new ExtensionFilter("Audio Files", "wav", "WAV", "mp3", "MP3"),
@@ -121,7 +126,8 @@ namespace HyperCoreScripts
             if (!File.Exists(path))
             {
                 Debug.LogError($"File '{path}' could not be found.");
-                return;
+                StatusController.UpdateStatus($"File '{path}' could not be found.");
+                yield break;
             }
 
             // Load the wave file reader or convert if it is an mp3
@@ -141,26 +147,40 @@ namespace HyperCoreScripts
                 catch (Exception e)
                 {
                     Debug.LogError($"Error loading file: {e.Message}");
-                    return;
+                    StatusController.UpdateStatus($"Error loading file: {e.Message}");
+                    yield break;
                 }
             }
             else
             {
                 Debug.LogError("Unsupported file extension.");
-                return;
+                StatusController.UpdateStatus("Unsupported file extension.");
+                yield break;
             }
 
             if (!reader.CanRead)
             {
                 Debug.LogError("Cannot read audio file.");
-                return;
+                StatusController.UpdateStatus("Cannot read audio file.");
+                yield break;
             }
-
+            
+            StatusController.UpdateStatus($"Loading wav file : {Path.GetFileName(path)}");
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+            
             List<float> sampleList = new List<float>();
             float[] sampleFrame;
+            float timeCheck = Time.realtimeSinceStartup;
             while ((sampleFrame = reader.ReadNextSampleFrame()) != null) //TODO: Load Asynchronously
             {
                 sampleList.AddRange(sampleFrame);
+                if (Time.realtimeSinceStartup > timeCheck + 0.5)
+                {
+                    StatusController.UpdateStatus($"Loaded \t{(int)((float)reader.Position/reader.Length*100)}%");
+                    timeCheck = Time.realtimeSinceStartup;
+                    yield return null;
+                }
             }
 
             float[] samples = sampleList.ToArray();
@@ -170,7 +190,8 @@ namespace HyperCoreScripts
             clip.SetData(samples, 0);
             HyperCore.TotalTime = clip.length;
             _source.clip = clip;
-            Debug.Log("Loaded audio data");
+            StatusController.UpdateStatus("Loaded Audio Data.");
+            yield return null;
         }
 
         // Converts an mp3 to wave on disk and returns the wavreader
@@ -189,28 +210,33 @@ namespace HyperCoreScripts
                 }
 
                 WaveFileReader wavReader = new WaveFileReader(outpath);
+                StatusController.UpdateStatus("Converted mp3 to wav...");
                 return wavReader;
             }
             catch (Exception e)
             {
                 Debug.LogError($"Error converting mp3 file: {e.Message}");
+                StatusController.UpdateStatus($"Error converting mp3 file: {e.Message}");
                 return null;
             }
         }
 
-        public void RenderFootage(float length)
+        public void RenderFootage()
         {
-            StartCoroutine(RenderRoutine(length));
+            StartCoroutine(RenderRoutine());
         }
 
-        private IEnumerator RenderRoutine(float length)
+        private IEnumerator RenderRoutine()
         {
             AudioClip clip = _source.clip;
+            float length = clip.length;
             int audioSamples = clip.frequency;
             int channels = clip.channels;
             float[] samples = new float[clip.samples * channels];
             clip.GetData(samples, 0);
             int samplesPerFrame = audioSamples / fps;
+            
+            StatusController.UpdateStatus("Rendering HyperVideo");
 
             MP4Recorder recorder = new MP4Recorder(MainRenderer.Width, MainRenderer.Height, fps, audioSamples,
                 channels, s => { Debug.Log(s); });
@@ -228,6 +254,7 @@ namespace HyperCoreScripts
                 DestroyImmediate(fTex);
                 clock.Tick();
                 Debug.Log($"Generated Frame {frame}/{(int) (length * fps)}");
+                StatusController.UpdateStatus($"Generated Frame {frame}/{(int) (length * fps)}");
             }
 
             recorder.Dispose();
