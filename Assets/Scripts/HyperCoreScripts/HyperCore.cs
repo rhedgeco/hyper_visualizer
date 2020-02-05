@@ -7,9 +7,9 @@ namespace HyperCoreScripts
         internal static HyperEvent BeginFrame { get; } = new HyperEvent();
         internal static HyperEvent UpdateFrame { get; } = new HyperEvent();
         internal static HyperEvent EndFrame { get; } = new HyperEvent();
-        
-        public static long CurrentFrame { get; internal set; }
-        public static float DeltaTime { get; internal set; }
+
+        public static float Time { get; internal set; }
+        public static float TotalTime { get; internal set; }
 
         public enum UpdateType
         {

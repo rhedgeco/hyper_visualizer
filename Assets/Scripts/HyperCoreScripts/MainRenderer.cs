@@ -32,12 +32,12 @@ namespace HyperCoreScripts
             RenderFrame();
         }
 
-        public static void RenderFrame()
+        internal static void RenderFrame()
         {
             _mainCamera.Render();
         }
 
-        public static Texture2D GetFrame(bool forceRender = false)
+        internal static Texture2D GetFrame(bool forceRender = false)
         {
             if (forceRender) RenderFrame();
             return RenderTextureToTexture2D(_mainCamera.targetTexture);

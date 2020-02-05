@@ -19,7 +19,7 @@ public class TestRot : MonoBehaviour
 
     private void RotateObject(HyperValues values)
     {
-        transform.Rotate(spin);
-        Debug.Log(HyperCore.DeltaTime);
+        transform.rotation = Quaternion.identity;
+        transform.Rotate(spin * HyperCore.Time);
     }
 }
