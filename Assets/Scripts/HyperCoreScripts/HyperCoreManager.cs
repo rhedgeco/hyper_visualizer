@@ -114,20 +114,45 @@ namespace HyperCoreScripts
         {
             string path = StandaloneFileBrowser.OpenFilePanel("Open Audio File", "", new[]
             {
-                new ExtensionFilter("Audio Files", "wav"),
+                new ExtensionFilter("Audio Files", "wav", "WAV", "mp3", "MP3"),
                 new ExtensionFilter("All Files", "*"),
             }, false)[0];
 
             if (!File.Exists(path))
             {
-                Debug.LogWarning($"File '{path}' could not be found.");
+                Debug.LogError($"File '{path}' could not be found.");
                 return;
             }
 
-            WaveFileReader reader = new WaveFileReader(path);
+            // Load the wave file reader or convert if it is an mp3
+            WaveFileReader reader;
+            if (Path.HasExtension(path) &&
+                Path.GetExtension(path).Equals(".mp3", StringComparison.InvariantCultureIgnoreCase))
+            {
+                reader = GetWavReaderFromMp3(path);
+            }
+            else if (Path.HasExtension(path) &&
+                     Path.GetExtension(path).Equals(".wav", StringComparison.InvariantCultureIgnoreCase))
+            {
+                try
+                {
+                    reader = new WaveFileReader(path);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"Error loading file: {e.Message}");
+                    return;
+                }
+            }
+            else
+            {
+                Debug.LogError("Unsupported file extension.");
+                return;
+            }
+
             if (!reader.CanRead)
             {
-                Debug.LogWarning("Cannot read audio file.");
+                Debug.LogError("Cannot read audio file.");
                 return;
             }
 
@@ -146,6 +171,31 @@ namespace HyperCoreScripts
             HyperCore.TotalTime = clip.length;
             _source.clip = clip;
             Debug.Log("Loaded audio data");
+        }
+
+        // Converts an mp3 to wave on disk and returns the wavreader
+        private WaveFileReader GetWavReaderFromMp3(string mp3Path)
+        {
+            try
+            {
+                string dir = Path.Combine(Application.persistentDataPath, "TempConversion");
+                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                string outpath = Path.Combine(dir, Path.GetFileName(mp3Path) ?? throw new NullReferenceException());
+                if (File.Exists(outpath)) File.Delete(outpath);
+
+                using (var reader = new Mp3FileReader(mp3Path))
+                {
+                    WaveFileWriter.CreateWaveFile(outpath, reader);
+                }
+
+                WaveFileReader wavReader = new WaveFileReader(outpath);
+                return wavReader;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Error converting mp3 file: {e.Message}");
+                return null;
+            }
         }
 
         public void RenderFootage(float length)
