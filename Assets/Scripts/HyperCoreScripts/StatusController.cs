@@ -1,8 +1,7 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace HyperCoreScripts
 {
     [RequireComponent(typeof(Text))]
     public class StatusController : MonoBehaviour
