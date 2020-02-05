@@ -2,7 +2,8 @@
     "name": "HyperCoreScripts",
     "references": [
         "NatCorder",
-        "UMod"
+        "SFB",
+        "NAudioPlugin"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using NatCorder;
 using NatCorder.Clocks;
+using NAudio.Wave;
+using SFB;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -44,12 +48,12 @@ namespace HyperCoreScripts
         private void Update()
         {
             AudioClip clip = _source.clip;
-            
+
             // Handle keyboard control over the timeline
             if (Input.GetButtonDown($"TimelineLeft")) timelineSlider.value -= arrowSkipAmount / clip.length;
             if (Input.GetButtonDown($"TimelineRight")) timelineSlider.value += arrowSkipAmount / clip.length;
             if (Input.GetButtonDown($"PlayPause")) TogglePlay();
-            
+
             if (timelineSlider.value >= TIMELINE_SLIDER_MAX_VALUE) Playing = false; // Stop playing if clip is past due
             if (Playing)
             {
@@ -102,6 +106,44 @@ namespace HyperCoreScripts
             HyperCore.BeginFrame.Invoke(values);
             HyperCore.UpdateFrame.Invoke(values);
             HyperCore.EndFrame.Invoke(values);
+        }
+
+        public void ImportAudioFromFile()
+        {
+            string path = StandaloneFileBrowser.OpenFilePanel("Open Audio File", "", new[]
+            {
+                new ExtensionFilter("Audio Files", "wav"),
+                new ExtensionFilter("All Files", "*"),
+            }, false)[0];
+
+            if (!File.Exists(path))
+            {
+                Debug.LogWarning($"File '{path}' could not be found.");
+                return;
+            }
+
+            WaveFileReader reader = new WaveFileReader(path);
+            if (!reader.CanRead)
+            {
+                Debug.LogWarning("Cannot read audio file.");
+                return;
+            }
+
+            List<float> sampleList = new List<float>();
+            float[] sampleFrame;
+            while ((sampleFrame = reader.ReadNextSampleFrame()) != null)
+            {
+                sampleList.AddRange(sampleFrame);
+            }
+
+            float[] samples = sampleList.ToArray();
+            AudioClip clip = AudioClip.Create("TestAudio", samples.Length / reader.WaveFormat.Channels,
+                reader.WaveFormat.Channels,
+                reader.WaveFormat.SampleRate, false);
+            clip.SetData(samples, 0);
+            HyperCore.TotalTime = clip.length;
+            _source.clip = clip;
+            Debug.Log("Loaded audio data");
         }
 
         public void RenderFootage(float length)
