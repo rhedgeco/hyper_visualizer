@@ -15,7 +15,7 @@ namespace HyperCoreScripts
     {
         [SerializeField] private int fps = 60;
         [SerializeField] private Slider timelineSlider;
-        [SerializeField] private AudioClip testAudio; //TODO: Replace with actual audio import
+        [SerializeField] private AudioClip startupAudio; //TODO: Replace with actual audio import
         [SerializeField] private float arrowSkipAmount = 5f;
 
         private static HyperCoreManager _instance;
@@ -24,6 +24,8 @@ namespace HyperCoreScripts
 
         public static bool Playing { get; internal set; }
 
+        public static string AudioTitle => _source.clip.name;
+
         private void Awake()
         {
             // Set up singleton
@@ -31,12 +33,12 @@ namespace HyperCoreScripts
             if (_instance != this) Destroy(this);
             DontDestroyOnLoad(gameObject);
 
-            HyperCore.TotalTime = testAudio.length;
+            HyperCore.TotalTime = startupAudio.length;
             timelineSlider.onValueChanged.AddListener(QuickRenderFrame);
             gameObject.AddComponent<AudioListener>();
             _source = gameObject.AddComponent<AudioSource>();
             _source.loop = false;
-            _source.clip = testAudio;
+            _source.clip = startupAudio;
         }
 
         private void Start()
@@ -131,13 +133,13 @@ namespace HyperCoreScripts
 
             List<float> sampleList = new List<float>();
             float[] sampleFrame;
-            while ((sampleFrame = reader.ReadNextSampleFrame()) != null)
+            while ((sampleFrame = reader.ReadNextSampleFrame()) != null) //TODO: Load Asynchronously
             {
                 sampleList.AddRange(sampleFrame);
             }
 
             float[] samples = sampleList.ToArray();
-            AudioClip clip = AudioClip.Create("TestAudio", samples.Length / reader.WaveFormat.Channels,
+            AudioClip clip = AudioClip.Create(Path.GetFileName(path), samples.Length / reader.WaveFormat.Channels,
                 reader.WaveFormat.Channels,
                 reader.WaveFormat.SampleRate, false);
             clip.SetData(samples, 0);
