@@ -9,9 +9,9 @@ public class TestRot : MonoBehaviour
     private void Awake()
     {
         spin = new Vector3(
-            Random.Range(-1f, 1f),
-            Random.Range(-1f, 1f),
-            Random.Range(-1f, 1f)
+            Random.Range(-50f, 50f),
+            Random.Range(-50f, 50f),
+            Random.Range(-50f, 50f)
         );
         
         HyperCore.ConnectFrameUpdate(RotateObject);
