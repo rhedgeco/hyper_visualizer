@@ -18,12 +18,12 @@ namespace UI
         private void Awake()
         {
             button = GetComponent<Button>();
-            button.onClick.AddListener(HyperCoreManager.TogglePlay);
+            button.onClick.AddListener(AudioManager.TogglePlay);
         }
 
         private void Update()
         {
-            if (HyperCoreManager.Playing)
+            if (AudioManager.Playing)
             {
                 iconImage.sprite = pauseIcon;
                 iconImage.color = pauseColor;

@@ -21,7 +21,7 @@ namespace UI
         {
             if (fpsText.Equals(""))
             {
-                HyperCoreManager.Fps = 1;
+                RenderingManager.Fps = 1;
                 return;
             }
 
@@ -36,7 +36,7 @@ namespace UI
             if (fps < 1) fps = 1;
 
             input.text = "" + fps;
-            HyperCoreManager.Fps = fps;
+            RenderingManager.Fps = fps;
         }
     }
 }

@@ -15,6 +15,6 @@ public class AudioTitleController : MonoBehaviour
 
     private void Update()
     {
-        text.text = HyperCoreManager.AudioTitle;
+        text.text = AudioManager.AudioTitle;
     }
 }
