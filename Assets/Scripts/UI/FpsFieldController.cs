@@ -14,7 +14,7 @@ namespace UI
         {
             input = GetComponent<InputField>();
             input.onValueChanged.AddListener(SetFpsChanged);
-            input.onValueChanged.AddListener(SetFpsEndChange);
+            input.onEndEdit.AddListener(SetFpsEndChange);
         }
 
         private void SetFpsChanged(string fpsText)
@@ -24,7 +24,7 @@ namespace UI
                 HyperCoreManager.Fps = 1;
                 return;
             }
-            
+
             SetFpsEndChange(fpsText);
         }
 
