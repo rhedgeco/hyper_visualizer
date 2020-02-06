@@ -4,7 +4,20 @@ namespace HyperScripts.Managers
 {
     public static class TimelineManager
     {
-        public static Slider Timeline { get; internal set; }
+        private static TimelineSlider _timeline;
+
+        public static TimelineSlider Timeline
+        {
+            get => _timeline;
+            internal set
+            {
+                _timeline = value;
+                _timeline.OnRetargetSlider.RemoveAllListeners();
+                _timeline.onValueChanged.RemoveAllListeners();
+                _timeline.onValueChanged.AddListener(HyperCoreRuntime.UpdateHyperFrame);
+                _timeline.OnRetargetSlider.AddListener(AudioManager.UpdateAudioToTimeline);
+            }
+        }
 
         internal static void UpdateTimelineState()
         {
@@ -13,7 +26,7 @@ namespace HyperScripts.Managers
         
         internal static void SetTimelinePos(float value)
         {
-            Timeline.value = value; // Has a listener that calls QuickRenderFrame
+            Timeline.value = value;
         }
     }
 }

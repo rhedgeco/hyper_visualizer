@@ -2,7 +2,6 @@
 using HyperScripts.Managers;
 using SFB;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace HyperScripts
 {
@@ -10,7 +9,7 @@ namespace HyperScripts
     {
         private static HyperCoreRuntime _instance;
         
-        [SerializeField] private Slider timelineSlider;
+        [SerializeField] private TimelineSlider timelineSlider;
         [SerializeField] private AudioClip startupAudio;
         [SerializeField] private float arrowSkipAmount = 5f;
 
@@ -30,13 +29,6 @@ namespace HyperScripts
 
             // Set up TimelineManager
             TimelineManager.Timeline = timelineSlider;
-            TimelineManager.Timeline.onValueChanged.AddListener(QuickRenderFrame);
-        }
-
-        private void Start()
-        {
-            // Has to be played once for some reason, otherwise the 'time' cannot be modified
-            AudioManager.Source.Play();
         }
 
         private void Update()
@@ -51,24 +43,15 @@ namespace HyperScripts
             AudioManager.UpdateAudioState();
             TimelineManager.UpdateTimelineState();
         }
-
-        private static void QuickRenderFrame(float value)
+        
+        internal static void UpdateHyperFrame(float value)
         {
-            AudioClip clip = AudioManager.Source.clip;
             HyperCore.Time = HyperCore.TotalTime * value;
-            int sampleTarget = (int) (clip.samples * value);
-            if (sampleTarget == clip.samples) sampleTarget -= clip.channels;
-            AudioManager.Source.timeSamples = sampleTarget;
-            UpdateHyperFrame();
-            MainRenderer.RenderFrame();
-        }
-
-        private static void UpdateHyperFrame()
-        {
             HyperValues values = new HyperValues(0f, new float[2], 1f);
             HyperCore.BeginFrame.Invoke(values);
             HyperCore.UpdateFrame.Invoke(values);
             HyperCore.EndFrame.Invoke(values);
+            MainRenderer.RenderFrame();
         }
 
         public void ImportAudioFromFile()

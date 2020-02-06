@@ -71,7 +71,7 @@ namespace HyperScripts.Managers
             for (int frame = 0; frame <= length * Fps; frame++)
             {
                 yield return new WaitForEndOfFrame();
-                TimelineManager.SetTimelinePos(frame / (length * Fps));
+                HyperCoreRuntime.UpdateHyperFrame(frame / length * Fps);
                 long timestamp = clock.Timestamp;
                 Texture2D fTex = MainRenderer.GetFrame();
                 float[] commitSamples = AudioManager.GetPartialSampleArray(samplesPerFrame * frame, samplesPerFrame);

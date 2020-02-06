@@ -181,17 +181,29 @@ namespace HyperScripts.Managers
 
         internal static void UpdateAudioState()
         {
-            if (Playing)
+            if (!RenderingManager.Rendering)
             {
-                if (!Source.isPlaying) Source.Play();
-            }
-            else
-            {
-                if (Source.isPlaying) Source.Pause();
-            }
+                if (Playing)
+                {
+                    if (!Source.isPlaying) Source.Play();
+                }
+                else
+                {
+                    if (Source.isPlaying) Source.Pause();
+                }
 
-            if (TimelineManager.Timeline.value >= RenderingManager.TimelineSliderMaxValue)
-                Playing = false; // Stop playing if clip is past due
+                if (TimelineManager.Timeline.value >= RenderingManager.TimelineSliderMaxValue)
+                    Playing = false; // Stop playing if clip is past due
+            }
+        }
+
+        internal static void UpdateAudioToTimeline()
+        {
+            float value = TimelineManager.Timeline.value;
+            AudioClip clip = Source.clip;
+            int sampleTarget = (int) (clip.samples * value);
+            if (sampleTarget == clip.samples) sampleTarget -= clip.channels;
+            Source.timeSamples = sampleTarget;
         }
 
         public static void TogglePlay()
@@ -209,7 +221,8 @@ namespace HyperScripts.Managers
         {
             Playing = false;
             Source.Stop();
-            TimelineManager.SetTimelinePos(0);
+            Source.timeSamples = 0;
+            TimelineManager.UpdateTimelineState();
         }
     }
 }
