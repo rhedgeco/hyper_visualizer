@@ -51,8 +51,8 @@ namespace HyperScripts
             AudioManager.UpdateAudioState();
             TimelineManager.UpdateTimelineState();
         }
-        
-        internal static void QuickRenderFrame(float value)
+
+        private static void QuickRenderFrame(float value)
         {
             AudioClip clip = AudioManager.Source.clip;
             HyperCore.Time = HyperCore.TotalTime * value;
@@ -63,7 +63,7 @@ namespace HyperScripts
             MainRenderer.RenderFrame();
         }
 
-        internal static void UpdateHyperFrame()
+        private static void UpdateHyperFrame()
         {
             HyperValues values = new HyperValues(0f, new float[2], 1f);
             HyperCore.BeginFrame.Invoke(values);
