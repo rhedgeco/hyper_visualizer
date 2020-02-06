@@ -2,7 +2,7 @@
 
 namespace HyperScripts
 {
-    public class HyperCore
+    public static class HyperCore
     {
         internal static HyperEvent BeginFrame { get; } = new HyperEvent();
         internal static HyperEvent UpdateFrame { get; } = new HyperEvent();
@@ -28,6 +28,9 @@ namespace HyperScripts
                     break;
                 case UpdateType.Late:
                     EndFrame.AddListener(method);
+                    break;
+                case UpdateType.Default:
+                    UpdateFrame.AddListener(method);
                     break;
                 default:
                     UpdateFrame.AddListener(method);
