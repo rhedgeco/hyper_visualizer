@@ -6,6 +6,7 @@ using NatCorder;
 using NatCorder.Clocks;
 using NAudio.Wave;
 using SFB;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -32,6 +33,7 @@ namespace HyperCoreScripts
                 fps = value;
             }
         }
+
         public static bool Playing { get; internal set; }
         public static string AudioTitle => _source.clip.name;
 
@@ -144,7 +146,17 @@ namespace HyperCoreScripts
             if (Path.HasExtension(path) &&
                 Path.GetExtension(path).Equals(".mp3", StringComparison.InvariantCultureIgnoreCase))
             {
+                OverlayController.Loading.StartLoading("Converting mp3 to wav...");
+                yield return new WaitForEndOfFrame();
+                yield return new WaitForEndOfFrame();
                 reader = GetWavReaderFromMp3(path);
+                if (reader == null)
+                {
+                    Debug.LogError($"Error converting file");
+                    StatusController.UpdateStatus($"Error converting file");
+                    OverlayController.Loading.EndLoading();
+                    yield break;
+                }
             }
             else if (Path.HasExtension(path) &&
                      Path.GetExtension(path).Equals(".wav", StringComparison.InvariantCultureIgnoreCase))
@@ -157,6 +169,7 @@ namespace HyperCoreScripts
                 {
                     Debug.LogError($"Error loading file: {e.Message}");
                     StatusController.UpdateStatus($"Error loading file: {e.Message}");
+                    OverlayController.Loading.EndLoading();
                     yield break;
                 }
             }
@@ -164,6 +177,7 @@ namespace HyperCoreScripts
             {
                 Debug.LogError("Unsupported file extension.");
                 StatusController.UpdateStatus("Unsupported file extension.");
+                OverlayController.Loading.EndLoading();
                 yield break;
             }
 
@@ -171,10 +185,12 @@ namespace HyperCoreScripts
             {
                 Debug.LogError("Cannot read audio file.");
                 StatusController.UpdateStatus("Cannot read audio file.");
+                OverlayController.Loading.EndLoading();
                 yield break;
             }
 
-            StatusController.UpdateStatus($"Loading wav file : {Path.GetFileName(path)}");
+            StatusController.UpdateStatus($"Reading wav file : {Path.GetFileName(path)}");
+            OverlayController.Loading.StartLoading($"Reading wav file : {Path.GetFileName(path)}");
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
 
@@ -186,7 +202,8 @@ namespace HyperCoreScripts
                 sampleList.AddRange(sampleFrame);
                 if (Time.realtimeSinceStartup > timeCheck + 0.5)
                 {
-                    StatusController.UpdateStatus($"Loaded \t{(int) ((float) reader.Position / reader.Length * 100)}%");
+                    float percent = (float) reader.Position / reader.Length;
+                    OverlayController.Loading.UpdateLoading(percent);
                     timeCheck = Time.realtimeSinceStartup;
                     yield return null;
                 }
@@ -201,6 +218,7 @@ namespace HyperCoreScripts
             HyperCore.TotalTime = clip.length;
             _source.clip = clip;
             StatusController.UpdateStatus("Loaded Audio Data.");
+            OverlayController.Loading.EndLoading();
             yield return null;
         }
 
@@ -237,7 +255,14 @@ namespace HyperCoreScripts
             {
                 new ExtensionFilter("Video File", "mp4"),
             });
-            if (path == null) return;
+            if (path == null || path.Equals("")) return;
+            if (!Directory.Exists(Path.GetDirectoryName(path)))
+            {
+                Debug.LogError("Directory does not exist.");
+                StatusController.UpdateStatus("Directory does not exist.");
+                return;
+            }
+
             StartCoroutine(RenderRoutine(path));
         }
 
@@ -250,8 +275,6 @@ namespace HyperCoreScripts
             float[] samples = new float[clip.samples * channels];
             clip.GetData(samples, 0);
             int samplesPerFrame = audioSamples / fps * channels;
-
-            StatusController.UpdateStatus("Rendering HyperVideo");
 
             MP4Recorder recorder = new MP4Recorder(MainRenderer.Width, MainRenderer.Height, fps, audioSamples, channels,
                 s =>
@@ -271,9 +294,19 @@ namespace HyperCoreScripts
                         return;
                     }
 
+                    if (File.Exists(outputPath)) File.Delete(outputPath);
                     File.Move(s, outputPath);
+
+                    Debug.Log("Finished Rendering");
+                    StatusController.UpdateStatus("Finished Rendering");
+                    OverlayController.Loading.EndLoading();
                 });
             FixedIntervalClock clock = new FixedIntervalClock(fps);
+
+            OverlayController.Loading.StartLoading($"Rendering HyperVisualization\n\n" +
+                                                   $"frame: 0/{(int) (length * fps)}");
+            StatusController.UpdateStatus("Rendering HyperVideo");
+            yield return new WaitForEndOfFrame();
 
             for (int frame = 0; frame <= length * fps; frame++)
             {
@@ -285,10 +318,15 @@ namespace HyperCoreScripts
                 recorder.CommitFrame(fTex.GetPixels32(), timestamp);
                 recorder.CommitSamples(commitSamples, timestamp);
                 DestroyImmediate(fTex);
+
+                float percent = (float) frame / (int) (length * fps);
                 Debug.Log($"Generated Frame {frame}/{(int) (length * fps)}");
                 StatusController.UpdateStatus($"Generated Frame {frame}/{(int) (length * fps)}");
+                OverlayController.Loading.UpdateLoading($"Rendering HyperVisualization\n\n" +
+                                                        $"frame: {frame}/{(int) (length * fps)}", percent);
             }
 
+            OverlayController.Loading.UpdateLoading("Finalizing Export", 1);
             recorder.Dispose();
         }
 
