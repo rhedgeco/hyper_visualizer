@@ -13,13 +13,29 @@ namespace UI
         private void Awake()
         {
             input = GetComponent<InputField>();
-            input.onValueChanged.AddListener(SetFps);
+            input.onValueChanged.AddListener(SetFpsChanged);
+            input.onValueChanged.AddListener(SetFpsEndChange);
         }
 
-        private void SetFps(string fpsText)
+        private void SetFpsChanged(string fpsText)
         {
-            int fps = 0;
+            if (fpsText.Equals(""))
+            {
+                HyperCoreManager.Fps = 1;
+                return;
+            }
+            
+            SetFpsEndChange(fpsText);
+        }
+
+        private void SetFpsEndChange(string fpsText)
+        {
+            int fps = 1;
             if (!fpsText.Equals("")) fps = int.Parse(fpsText);
+            if (fps > 99) fps = 99;
+            if (fps < 1) fps = 1;
+
+            input.text = "" + fps;
             HyperCoreManager.Fps = fps;
         }
     }

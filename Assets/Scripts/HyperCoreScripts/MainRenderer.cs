@@ -7,7 +7,7 @@ namespace HyperCoreScripts
     [RequireComponent(typeof(Camera))]
     public class MainRenderer : MonoBehaviour
     {
-        private static MainRenderer _instance = null;
+        private static MainRenderer _instance;
 
         private static Camera _mainCamera;
         public static int Width => _mainCamera.targetTexture.width;
