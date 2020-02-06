@@ -1,5 +1,6 @@
 using System.Collections;
 using System.IO;
+using HyperCoreScripts.Managers;
 using NatCorder;
 using NatCorder.Clocks;
 using UI;
@@ -40,14 +41,14 @@ namespace HyperCoreScripts
                     if (!File.Exists(s))
                     {
                         Debug.LogError("ERROR: Could not locate saved file. Contact dev.");
-                        StatusController.UpdateStatus("ERROR: Could not locate saved file. Contact dev.");
+                        StatusManager.UpdateStatus("ERROR: Could not locate saved file. Contact dev.");
                         return;
                     }
 
                     if (!Directory.Exists(Path.GetDirectoryName(outputPath)))
                     {
                         Debug.LogError("ERROR: Output path is not accessible.");
-                        StatusController.UpdateStatus("ERROR: Output path is not accessible.");
+                        StatusManager.UpdateStatus("ERROR: Output path is not accessible.");
                         return;
                     }
 
@@ -55,14 +56,14 @@ namespace HyperCoreScripts
                     File.Move(s, outputPath);
 
                     Debug.Log("Finished Rendering");
-                    StatusController.UpdateStatus("Finished Rendering");
-                    OverlayController.Loading.EndLoading();
+                    StatusManager.UpdateStatus("Finished Rendering");
+                    OverlayManager.Loading.EndLoading();
                 });
             FixedIntervalClock clock = new FixedIntervalClock(Fps);
 
-            OverlayController.Loading.StartLoading("Rendering HyperVisualization\n\n" +
+            OverlayManager.Loading.StartLoading("Rendering HyperVisualization\n\n" +
                                                    $"frame: 0/{(int) (length * Fps)}");
-            StatusController.UpdateStatus("Rendering HyperVideo");
+            StatusManager.UpdateStatus("Rendering HyperVideo");
             yield return new WaitForEndOfFrame();
 
             for (int frame = 0; frame <= length * Fps; frame++)
@@ -77,24 +78,13 @@ namespace HyperCoreScripts
                 Object.DestroyImmediate(fTex);
 
                 float percent = (float) frame / (int) (length * Fps);
-                StatusController.UpdateStatus($"Generated Frame {frame}/{(int) (length * Fps)}");
-                OverlayController.Loading.UpdateLoading("Rendering HyperVisualization\n\n" +
+                StatusManager.UpdateStatus($"Generated Frame {frame}/{(int) (length * Fps)}");
+                OverlayManager.Loading.UpdateLoading("Rendering HyperVisualization\n\n" +
                                                         $"frame: {frame}/{(int) (length * Fps)}", percent);
             }
 
-            OverlayController.Loading.UpdateLoading("Finalizing Export", 1);
+            OverlayManager.Loading.UpdateLoading("Finalizing Export", 1);
             recorder.Dispose();
-        }
-
-        internal static void QuickRenderFrame(float value)
-        {
-            AudioClip clip = AudioManager.Source.clip;
-            HyperCore.Time = HyperCore.TotalTime * value;
-            int sampleTarget = (int) (clip.samples * value);
-            if (sampleTarget == clip.samples) sampleTarget -= clip.channels;
-            AudioManager.Source.timeSamples = sampleTarget;
-            HyperCoreManager.UpdateHyperFrame();
-            MainRenderer.RenderFrame();
         }
     }
 }

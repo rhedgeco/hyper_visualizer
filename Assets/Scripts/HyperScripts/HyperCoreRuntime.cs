@@ -1,13 +1,14 @@
 ﻿using System.IO;
+using HyperCoreScripts.Managers;
 using SFB;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace HyperCoreScripts
 {
-    public class HyperCoreManager : MonoBehaviour
+    public class HyperCoreRuntime : MonoBehaviour
     {
-        private static HyperCoreManager _instance;
+        private static HyperCoreRuntime _instance;
         
         [SerializeField] private Slider timelineSlider;
         [SerializeField] private AudioClip startupAudio;
@@ -29,6 +30,7 @@ namespace HyperCoreScripts
 
             // Set up TimelineManager
             TimelineManager.Timeline = timelineSlider;
+            TimelineManager.Timeline.onValueChanged.AddListener(QuickRenderFrame);
         }
 
         private void Start()
@@ -50,6 +52,17 @@ namespace HyperCoreScripts
             TimelineManager.UpdateTimelineState();
         }
         
+        internal static void QuickRenderFrame(float value)
+        {
+            AudioClip clip = AudioManager.Source.clip;
+            HyperCore.Time = HyperCore.TotalTime * value;
+            int sampleTarget = (int) (clip.samples * value);
+            if (sampleTarget == clip.samples) sampleTarget -= clip.channels;
+            AudioManager.Source.timeSamples = sampleTarget;
+            UpdateHyperFrame();
+            MainRenderer.RenderFrame();
+        }
+
         internal static void UpdateHyperFrame()
         {
             HyperValues values = new HyperValues(0f, new float[2], 1f);
@@ -79,7 +92,7 @@ namespace HyperCoreScripts
             if (!Directory.Exists(Path.GetDirectoryName(path)))
             {
                 Debug.LogError("Directory does not exist.");
-                StatusController.UpdateStatus("Directory does not exist.");
+                StatusManager.UpdateStatus("Directory does not exist.");
                 return;
             }
 

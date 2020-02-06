@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    public class LoadingOverlayController : MonoBehaviour
+    public class LoadingOverlayManager : MonoBehaviour
     {
         [SerializeField] private Text text;
         [SerializeField] private Slider loadingBar;

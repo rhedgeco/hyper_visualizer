@@ -1,5 +1,6 @@
 ﻿using System;
 using HyperCoreScripts;
+using HyperCoreScripts.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 

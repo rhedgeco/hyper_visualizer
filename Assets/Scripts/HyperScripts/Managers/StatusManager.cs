@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace HyperCoreScripts
 {
     [RequireComponent(typeof(Text))]
-    public class StatusController : MonoBehaviour
+    public class StatusManager : MonoBehaviour
     {
         private static string text;
         private Text textObject;

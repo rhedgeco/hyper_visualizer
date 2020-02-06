@@ -1,9 +1,7 @@
 {
-    "name": "HyperCoreScripts",
+    "name": "UI",
     "references": [
-        "NatCorder",
-        "SFB",
-        "NAudioPlugin"
+        "GUID:d6538aeb66142d6449eadcbdff11cd10"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

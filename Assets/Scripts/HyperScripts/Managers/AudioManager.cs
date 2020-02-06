@@ -6,7 +6,7 @@ using NAudio.Wave;
 using UI;
 using UnityEngine;
 
-namespace HyperCoreScripts
+namespace HyperCoreScripts.Managers
 {
     public static class AudioManager
     {
@@ -62,13 +62,13 @@ namespace HyperCoreScripts
                 }
 
                 WaveFileReader wavReader = new WaveFileReader(outPath);
-                StatusController.UpdateStatus("Converted mp3 to wav...");
+                StatusManager.UpdateStatus("Converted mp3 to wav...");
                 return wavReader;
             }
             catch (Exception e)
             {
                 Debug.LogError($"Error converting mp3 file: {e.Message}");
-                StatusController.UpdateStatus($"Error converting mp3 file: {e.Message}");
+                StatusManager.UpdateStatus($"Error converting mp3 file: {e.Message}");
                 return null;
             }
         }
@@ -84,7 +84,7 @@ namespace HyperCoreScripts
             if (!File.Exists(path))
             {
                 Debug.LogError($"File '{path}' could not be found.");
-                StatusController.UpdateStatus($"File '{path}' could not be found.");
+                StatusManager.UpdateStatus($"File '{path}' could not be found.");
                 yield break;
             }
 
@@ -94,15 +94,15 @@ namespace HyperCoreScripts
                 // ReSharper disable once PossibleNullReferenceException
                 Path.GetExtension(path).Equals(".mp3", StringComparison.InvariantCultureIgnoreCase))
             {
-                OverlayController.Loading.StartLoading("Converting mp3 to wav...");
+                OverlayManager.Loading.StartLoading("Converting mp3 to wav...");
                 yield return new WaitForEndOfFrame();
                 yield return new WaitForEndOfFrame();
                 reader = GetWavReaderFromMp3(path);
                 if (reader == null)
                 {
                     Debug.LogError("Error converting file");
-                    StatusController.UpdateStatus("Error converting file");
-                    OverlayController.Loading.EndLoading();
+                    StatusManager.UpdateStatus("Error converting file");
+                    OverlayManager.Loading.EndLoading();
                     yield break;
                 }
             }
@@ -117,29 +117,29 @@ namespace HyperCoreScripts
                 catch (Exception e)
                 {
                     Debug.LogError($"Error loading file: {e.Message}");
-                    StatusController.UpdateStatus($"Error loading file: {e.Message}");
-                    OverlayController.Loading.EndLoading();
+                    StatusManager.UpdateStatus($"Error loading file: {e.Message}");
+                    OverlayManager.Loading.EndLoading();
                     yield break;
                 }
             }
             else
             {
                 Debug.LogError("Unsupported file extension.");
-                StatusController.UpdateStatus("Unsupported file extension.");
-                OverlayController.Loading.EndLoading();
+                StatusManager.UpdateStatus("Unsupported file extension.");
+                OverlayManager.Loading.EndLoading();
                 yield break;
             }
 
             if (!reader.CanRead)
             {
                 Debug.LogError("Cannot read audio file.");
-                StatusController.UpdateStatus("Cannot read audio file.");
-                OverlayController.Loading.EndLoading();
+                StatusManager.UpdateStatus("Cannot read audio file.");
+                OverlayManager.Loading.EndLoading();
                 yield break;
             }
 
-            StatusController.UpdateStatus($"Reading wav file : {Path.GetFileNameWithoutExtension(path)}");
-            OverlayController.Loading.StartLoading($"Reading wav file : {Path.GetFileNameWithoutExtension(path)}");
+            StatusManager.UpdateStatus($"Reading wav file : {Path.GetFileNameWithoutExtension(path)}");
+            OverlayManager.Loading.StartLoading($"Reading wav file : {Path.GetFileNameWithoutExtension(path)}");
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
 
@@ -152,7 +152,7 @@ namespace HyperCoreScripts
                 if (Time.realtimeSinceStartup > timeCheck + 0.5)
                 {
                     float percent = (float) reader.Position / reader.Length;
-                    OverlayController.Loading.UpdateLoading(percent);
+                    OverlayManager.Loading.UpdateLoading(percent);
                     timeCheck = Time.realtimeSinceStartup;
                     yield return null;
                 }
@@ -167,8 +167,8 @@ namespace HyperCoreScripts
             HyperCore.TotalTime = clip.length;
             Source.clip = clip;
             RecalculateSamples();
-            StatusController.UpdateStatus("Loaded Audio Data.");
-            OverlayController.Loading.EndLoading();
+            StatusManager.UpdateStatus("Loaded Audio Data.");
+            OverlayManager.Loading.EndLoading();
             yield return null;
         }
 
