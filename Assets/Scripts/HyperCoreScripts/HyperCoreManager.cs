@@ -13,7 +13,7 @@ namespace HyperCoreScripts
 {
     public class HyperCoreManager : MonoBehaviour
     {
-        [SerializeField] private int fps = 60;
+        private static int fps = 60;
         [SerializeField] private Slider timelineSlider;
         [SerializeField] private AudioClip startupAudio; //TODO: Replace with actual audio import
         [SerializeField] private float arrowSkipAmount = 5f;
@@ -22,8 +22,17 @@ namespace HyperCoreScripts
         private static AudioSource _source;
         private const float TIMELINE_SLIDER_MAX_VALUE = 0.9999f;
 
+        public static int Fps
+        {
+            get => fps;
+            set
+            {
+                if (value > 99) fps = 99;
+                if (value < 1) fps = 1;
+                fps = value;
+            }
+        }
         public static bool Playing { get; internal set; }
-
         public static string AudioTitle => _source.clip.name;
 
         private void Awake()
@@ -224,9 +233,9 @@ namespace HyperCoreScripts
 
         public void RenderFootage()
         {
-            string path = StandaloneFileBrowser.SaveFilePanel("Render To...", "", _source.clip.name, new []
+            string path = StandaloneFileBrowser.SaveFilePanel("Render To...", "", _source.clip.name, new[]
             {
-                new ExtensionFilter("Video File", "mp4"), 
+                new ExtensionFilter("Video File", "mp4"),
             });
             if (path == null) return;
             StartCoroutine(RenderRoutine(path));
@@ -244,7 +253,7 @@ namespace HyperCoreScripts
 
             StatusController.UpdateStatus("Rendering HyperVideo");
 
-            MP4Recorder recorder = new MP4Recorder(MainRenderer.Width, MainRenderer.Height, fps, audioSamples,channels,
+            MP4Recorder recorder = new MP4Recorder(MainRenderer.Width, MainRenderer.Height, fps, audioSamples, channels,
                 s =>
                 {
                     // Set up to move file to output location after rendering
@@ -261,8 +270,8 @@ namespace HyperCoreScripts
                         StatusController.UpdateStatus("ERROR: Output path is not accessible.");
                         return;
                     }
-                    
-                    File.Move(s,outputPath);
+
+                    File.Move(s, outputPath);
                 });
             FixedIntervalClock clock = new FixedIntervalClock(fps);
 
