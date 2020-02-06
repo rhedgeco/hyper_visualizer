@@ -3,10 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using NAudio.Wave;
-using UI;
 using UnityEngine;
 
-namespace HyperCoreScripts.Managers
+namespace HyperScripts.Managers
 {
     public static class AudioManager
     {

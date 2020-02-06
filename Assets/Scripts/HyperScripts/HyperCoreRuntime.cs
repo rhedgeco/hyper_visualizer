@@ -1,10 +1,10 @@
 ﻿using System.IO;
-using HyperCoreScripts.Managers;
+using HyperScripts.Managers;
 using SFB;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace HyperCoreScripts
+namespace HyperScripts
 {
     public class HyperCoreRuntime : MonoBehaviour
     {

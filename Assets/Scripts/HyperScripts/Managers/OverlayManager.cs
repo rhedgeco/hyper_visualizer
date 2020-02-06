@@ -1,7 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace UI
+namespace HyperScripts.Managers
 {
     public class OverlayManager : MonoBehaviour
     {

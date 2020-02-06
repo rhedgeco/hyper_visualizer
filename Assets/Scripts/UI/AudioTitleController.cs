@@ -1,21 +1,22 @@
-﻿using System;
-using HyperCoreScripts;
-using HyperCoreScripts.Managers;
+﻿using HyperScripts.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Text))]
-public class AudioTitleController : MonoBehaviour
+namespace UI
 {
-    private Text text;
+    [RequireComponent(typeof(Text))]
+    public class AudioTitleController : MonoBehaviour
+    {
+        private Text text;
     
-    private void Awake()
-    {
-        text = GetComponent<Text>();
-    }
+        private void Awake()
+        {
+            text = GetComponent<Text>();
+        }
 
-    private void Update()
-    {
-        text.text = AudioManager.AudioTitle;
+        private void Update()
+        {
+            text.text = AudioManager.AudioTitle;
+        }
     }
 }

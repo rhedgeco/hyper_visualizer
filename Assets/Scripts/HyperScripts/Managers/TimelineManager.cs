@@ -1,7 +1,6 @@
-using HyperCoreScripts.Managers;
 using UnityEngine.UI;
 
-namespace HyperCoreScripts
+namespace HyperScripts.Managers
 {
     public static class TimelineManager
     {

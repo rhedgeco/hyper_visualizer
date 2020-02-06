@@ -1,8 +1,7 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace HyperCoreScripts
+namespace HyperScripts
 {
     [RequireComponent(typeof(Camera))]
     public class MainRenderer : MonoBehaviour

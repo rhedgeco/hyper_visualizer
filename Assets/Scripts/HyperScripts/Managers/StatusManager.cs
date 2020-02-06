@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace HyperCoreScripts
+namespace HyperScripts.Managers
 {
     [RequireComponent(typeof(Text))]
     public class StatusManager : MonoBehaviour

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace HyperScripts.Managers
 {
     public class LoadingOverlayManager : MonoBehaviour
     {

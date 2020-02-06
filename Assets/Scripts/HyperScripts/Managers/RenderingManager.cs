@@ -1,13 +1,11 @@
 using System.Collections;
 using System.IO;
-using HyperCoreScripts.Managers;
 using NatCorder;
 using NatCorder.Clocks;
-using UI;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace HyperCoreScripts
+namespace HyperScripts.Managers
 {
     public static class RenderingManager
     {

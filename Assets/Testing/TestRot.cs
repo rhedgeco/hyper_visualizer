@@ -1,4 +1,4 @@
-﻿using HyperCoreScripts;
+﻿using HyperScripts;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
