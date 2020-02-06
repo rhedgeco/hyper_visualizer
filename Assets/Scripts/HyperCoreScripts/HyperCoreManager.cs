@@ -189,8 +189,8 @@ namespace HyperCoreScripts
                 yield break;
             }
 
-            StatusController.UpdateStatus($"Reading wav file : {Path.GetFileName(path)}");
-            OverlayController.Loading.StartLoading($"Reading wav file : {Path.GetFileName(path)}");
+            StatusController.UpdateStatus($"Reading wav file : {Path.GetFileNameWithoutExtension(path)}");
+            OverlayController.Loading.StartLoading($"Reading wav file : {Path.GetFileNameWithoutExtension(path)}");
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
 
@@ -210,7 +210,7 @@ namespace HyperCoreScripts
             }
 
             float[] samples = sampleList.ToArray();
-            AudioClip clip = AudioClip.Create(Path.ChangeExtension(Path.GetFileName(path), ""),
+            AudioClip clip = AudioClip.Create(Path.GetFileNameWithoutExtension(path),
                 samples.Length / reader.WaveFormat.Channels,
                 reader.WaveFormat.Channels,
                 reader.WaveFormat.SampleRate, false);
@@ -320,7 +320,6 @@ namespace HyperCoreScripts
                 DestroyImmediate(fTex);
 
                 float percent = (float) frame / (int) (length * fps);
-                Debug.Log($"Generated Frame {frame}/{(int) (length * fps)}");
                 StatusController.UpdateStatus($"Generated Frame {frame}/{(int) (length * fps)}");
                 OverlayController.Loading.UpdateLoading($"Rendering HyperVisualization\n\n" +
                                                         $"frame: {frame}/{(int) (length * fps)}", percent);
