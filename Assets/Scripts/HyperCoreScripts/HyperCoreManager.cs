@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using NatCorder;
-using NatCorder.Clocks;
-using NAudio.Wave;
+﻿using System.IO;
 using SFB;
-using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,7 +26,7 @@ namespace HyperCoreScripts
             // Set up AudioManager
             AudioManager.Source = gameObject.AddComponent<AudioSource>();
             AudioManager.DefaultAudio = startupAudio;
-            
+
             // Set up TimelineManager
             TimelineManager.Timeline = timelineSlider;
         }
@@ -47,14 +40,22 @@ namespace HyperCoreScripts
         private void Update()
         {
             // Handle keyboard control over the timeline
-            if (Input.GetButtonDown($"TimelineLeft"))
+            if (Input.GetButtonDown("TimelineLeft"))
                 TimelineManager.Timeline.value -= arrowSkipAmount / AudioManager.Clip.length;
-            if (Input.GetButtonDown($"TimelineRight"))
+            if (Input.GetButtonDown("TimelineRight"))
                 TimelineManager.Timeline.value += arrowSkipAmount / AudioManager.Clip.length;
-            if (Input.GetButtonDown($"PlayPause")) AudioManager.TogglePlay();
+            if (Input.GetButtonDown("PlayPause")) AudioManager.TogglePlay();
             
             AudioManager.UpdateAudioState();
             TimelineManager.UpdateTimelineState();
+        }
+        
+        internal static void UpdateHyperFrame()
+        {
+            HyperValues values = new HyperValues(0f, new float[2], 1f);
+            HyperCore.BeginFrame.Invoke(values);
+            HyperCore.UpdateFrame.Invoke(values);
+            HyperCore.EndFrame.Invoke(values);
         }
 
         public void ImportAudioFromFile()

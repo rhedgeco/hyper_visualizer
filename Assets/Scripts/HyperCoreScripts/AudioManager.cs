@@ -3,41 +3,80 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using NAudio.Wave;
-using SFB;
 using UI;
 using UnityEngine;
 
 namespace HyperCoreScripts
 {
-    public class AudioManager
+    public static class AudioManager
     {
-        public static bool Playing { get; internal set; }
-        
         private static AudioSource _source;
+        private static float[] _samples;
 
-        public static AudioSource Source
+        public static bool Playing { get; private set; }
+
+        internal static AudioSource Source
         {
             get => _source;
-            internal set
+            set
             {
                 _source = value;
                 _source.loop = false;
             }
         }
 
-        public static AudioClip Clip
+        internal static AudioClip Clip => Source.clip;
+
+        internal static AudioClip DefaultAudio
         {
-            get => Source.clip;
+            set
+            {
+                Source.clip = value;
+                RecalculateSamples();
+            }
         }
 
-        public static AudioClip DefaultAudio
+        public static string AudioTitle => Source.clip.name;
+
+        private static float[] Samples
         {
-            set => Source.clip = value;
+            get
+            {
+                if (_samples == null) RecalculateSamples();
+                return _samples;
+            }
         }
 
-        public static string AudioTitle
+        private static WaveFileReader GetWavReaderFromMp3(string mp3Path)
         {
-            get => Source.clip.name;
+            try
+            {
+                string dir = Path.Combine(Application.persistentDataPath, "TempConversion");
+                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                string outPath = Path.Combine(dir, Path.GetFileName(mp3Path) ?? throw new NullReferenceException());
+                if (File.Exists(outPath)) File.Delete(outPath);
+
+                using (var reader = new Mp3FileReader(mp3Path))
+                {
+                    WaveFileWriter.CreateWaveFile(outPath, reader);
+                }
+
+                WaveFileReader wavReader = new WaveFileReader(outPath);
+                StatusController.UpdateStatus("Converted mp3 to wav...");
+                return wavReader;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Error converting mp3 file: {e.Message}");
+                StatusController.UpdateStatus($"Error converting mp3 file: {e.Message}");
+                return null;
+            }
+        }
+
+        private static void RecalculateSamples()
+        {
+            _samples = new float[Clip.samples * Clip.channels];
+            Clip.GetData(_samples, 0);
         }
 
         internal static IEnumerator ImportAudioRoutine(string path)
@@ -52,6 +91,7 @@ namespace HyperCoreScripts
             // Load the wave file reader or convert if it is an mp3
             WaveFileReader reader;
             if (Path.HasExtension(path) &&
+                // ReSharper disable once PossibleNullReferenceException
                 Path.GetExtension(path).Equals(".mp3", StringComparison.InvariantCultureIgnoreCase))
             {
                 OverlayController.Loading.StartLoading("Converting mp3 to wav...");
@@ -60,13 +100,14 @@ namespace HyperCoreScripts
                 reader = GetWavReaderFromMp3(path);
                 if (reader == null)
                 {
-                    Debug.LogError($"Error converting file");
-                    StatusController.UpdateStatus($"Error converting file");
+                    Debug.LogError("Error converting file");
+                    StatusController.UpdateStatus("Error converting file");
                     OverlayController.Loading.EndLoading();
                     yield break;
                 }
             }
             else if (Path.HasExtension(path) &&
+                     // ReSharper disable once PossibleNullReferenceException
                      Path.GetExtension(path).Equals(".wav", StringComparison.InvariantCultureIgnoreCase))
             {
                 try
@@ -117,43 +158,26 @@ namespace HyperCoreScripts
                 }
             }
 
-            float[] samples = sampleList.ToArray();
+            float[] sampleArray = sampleList.ToArray();
             AudioClip clip = AudioClip.Create(Path.GetFileNameWithoutExtension(path),
-                samples.Length / reader.WaveFormat.Channels,
+                sampleArray.Length / reader.WaveFormat.Channels,
                 reader.WaveFormat.Channels,
                 reader.WaveFormat.SampleRate, false);
-            clip.SetData(samples, 0);
+            clip.SetData(sampleArray, 0);
             HyperCore.TotalTime = clip.length;
-            _source.clip = clip;
+            Source.clip = clip;
+            RecalculateSamples();
             StatusController.UpdateStatus("Loaded Audio Data.");
             OverlayController.Loading.EndLoading();
             yield return null;
         }
-        
-        private static WaveFileReader GetWavReaderFromMp3(string mp3Path)
+
+        internal static float[] GetPartialSampleArray(int startIndex, int length)
         {
-            try
-            {
-                string dir = Path.Combine(Application.persistentDataPath, "TempConversion");
-                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
-                string outpath = Path.Combine(dir, Path.GetFileName(mp3Path) ?? throw new NullReferenceException());
-                if (File.Exists(outpath)) File.Delete(outpath);
-
-                using (var reader = new Mp3FileReader(mp3Path))
-                {
-                    WaveFileWriter.CreateWaveFile(outpath, reader);
-                }
-
-                WaveFileReader wavReader = new WaveFileReader(outpath);
-                StatusController.UpdateStatus("Converted mp3 to wav...");
-                return wavReader;
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"Error converting mp3 file: {e.Message}");
-                StatusController.UpdateStatus($"Error converting mp3 file: {e.Message}");
-                return null;
-            }
+            float[] partial = new float[length];
+            if (Samples.Length - startIndex < length) length = Samples.Length - startIndex;
+            Array.Copy(Samples, startIndex, partial, 0, length);
+            return partial;
         }
 
         internal static void UpdateAudioState()
@@ -166,7 +190,7 @@ namespace HyperCoreScripts
             {
                 if (Source.isPlaying) Source.Pause();
             }
-            
+
             if (TimelineManager.Timeline.value >= RenderingManager.TimelineSliderMaxValue)
                 Playing = false; // Stop playing if clip is past due
         }
@@ -180,7 +204,7 @@ namespace HyperCoreScripts
             }
             else Playing = !Playing;
         }
-        
+
         public static void StopPlaying()
         {
             Playing = false;
