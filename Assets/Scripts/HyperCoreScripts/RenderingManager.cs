@@ -109,8 +109,7 @@ namespace HyperCoreScripts
             HyperCore.UpdateFrame.Invoke(values);
             HyperCore.EndFrame.Invoke(values);
         }
-
-        // Copies a smaller section of the sample array
+        
         private static float[] GetPartialSampleArray(float[] samples, int startIndex, int length)
         {
             float[] partial = new float[length];

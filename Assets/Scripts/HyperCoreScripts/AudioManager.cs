@@ -130,7 +130,6 @@ namespace HyperCoreScripts
             yield return null;
         }
         
-        // Converts an mp3 to wave on disk and returns the wavreader
         private static WaveFileReader GetWavReaderFromMp3(string mp3Path)
         {
             try

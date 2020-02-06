@@ -12,6 +12,7 @@ namespace HyperCoreScripts
             internal set
             {
                 timeline = value;
+                timeline.onValueChanged.RemoveAllListeners();
                 timeline.onValueChanged.AddListener(RenderingManager.QuickRenderFrame);
             }
         }
