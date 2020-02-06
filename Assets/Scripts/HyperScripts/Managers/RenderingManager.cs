@@ -24,6 +24,8 @@ namespace HyperScripts.Managers
             }
         }
 
+        public static bool Rendering { get; private set; }
+        
         internal static IEnumerator RenderRoutine(string outputPath)
         {
             AudioClip clip = AudioManager.Clip;
@@ -64,6 +66,8 @@ namespace HyperScripts.Managers
             StatusManager.UpdateStatus("Rendering HyperVideo");
             yield return new WaitForEndOfFrame();
 
+            Rendering = true;
+            AudioManager.StopPlaying();
             for (int frame = 0; frame <= length * Fps; frame++)
             {
                 yield return new WaitForEndOfFrame();

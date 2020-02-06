@@ -196,6 +196,7 @@ namespace HyperScripts.Managers
 
         public static void TogglePlay()
         {
+            if (RenderingManager.Rendering) return;
             if (!Playing && TimelineManager.Timeline.value >= RenderingManager.TimelineSliderMaxValue)
             {
                 TimelineManager.Timeline.value = 0;
