@@ -1,11 +1,10 @@
 using System;
-using UnityEngine;
 
 namespace Plugins.Free.FFT
 {
     public static class Windowing
     {
-        public static double[] HackyRyanWindow(float[] samples, int startIndex, int length, int channel)
+        public static double[] HackyRyanBlackmanWindow(float[] samples, int startIndex, int length, int channel)
         {
             double[] spec = new double[length];
             for (int i = 0; i < length; i++)
