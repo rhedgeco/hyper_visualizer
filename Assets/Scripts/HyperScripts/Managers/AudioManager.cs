@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.IO;
 using HyperScripts.Threading;
-using Lomont;
+using Plugins.Free.FFT;
 using UnityEngine;
 
 namespace HyperScripts.Managers
@@ -72,11 +72,7 @@ namespace HyperScripts.Managers
 
         internal static double[] GetSpectrumData(int startIndex, int length, int channel)
         {
-            double[] spec = new double[length];
-            for (int i = 0; i < spec.Length; i++)
-            {
-                spec[i] = _samples[(startIndex * 2) + (i * 2) + channel];
-            }
+            double[] spec = Windowing.HackyRyanWindow(_samples, startIndex, length, channel);
             LomontFFT fft = new LomontFFT();
             fft.RealFFT(spec, false);
             return spec;
