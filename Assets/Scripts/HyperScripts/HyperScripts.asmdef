@@ -3,8 +3,7 @@
     "references": [
         "NatCorder",
         "SFB",
-        "NAudioPlugin",
-        "HyperCoreManagers"
+        "NAudioPlugin"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
