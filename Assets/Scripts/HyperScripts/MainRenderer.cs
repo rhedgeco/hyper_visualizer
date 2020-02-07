@@ -21,7 +21,7 @@ namespace HyperScripts
             DontDestroyOnLoad(_instance);
 
             _mainCamera = GetComponent<Camera>();
-            _mainCamera.targetTexture = new RenderTexture(1920/2, 1080/2, 24, RenderTextureFormat.Default,
+            _mainCamera.targetTexture = new RenderTexture(1920, 1080, 24, RenderTextureFormat.Default,
                 RenderTextureReadWrite.Linear);
             _imageDisplay.texture = _mainCamera.targetTexture;
             _mainCamera.enabled = false;

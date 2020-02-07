@@ -8,7 +8,7 @@ namespace Testing
         [SerializeField] private GameObject cube;
         [SerializeField] private float size = 4;
 
-        private GameObject[] cubes = new GameObject[256];
+        private GameObject[] cubes = new GameObject[512];
 
         private void Awake()
         {
@@ -26,14 +26,14 @@ namespace Testing
         {
             for (int i = 0; i < cubes.Length / 2; i++)
             {
-                float specTime = Mathf.Min(Mathf.Abs((float) values.SpectrumLeft[i]), 4);
+                float specTime = Mathf.Abs((float) values.SpectrumLeft[i]);
                 cubes[i].transform.localScale =
                     new Vector3(1, 1 + (size * specTime), 1);
             }
 
             for (int i = cubes.Length - 1; i >= cubes.Length / 2; i--)
             {
-                float specTime = Mathf.Min(Mathf.Abs((float) values.SpectrumRight[(cubes.Length - 1) - i]), 4);
+                float specTime = Mathf.Abs((float) values.SpectrumRight[(cubes.Length - 1) - i]);
                 cubes[i].transform.localScale =
                     new Vector3(1, 1 + (size * specTime), 1);
             }

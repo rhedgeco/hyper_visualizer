@@ -74,7 +74,7 @@ namespace HyperScripts.Managers
         {
             double[] spec = Windowing.HackyRyanWindow(_samples, startIndex, length, channel);
             LomontFFT fft = new LomontFFT();
-            fft.RealFFT(spec, false);
+            fft.RealFFT(spec, true);
             return spec;
         }
 

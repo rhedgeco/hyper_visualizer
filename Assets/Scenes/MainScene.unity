@@ -846,7 +846,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1180.4445, y: 664}
+  m_SizeDelta: {x: 698.99994, y: 393.18747}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &292461305
 MonoBehaviour:
@@ -3714,7 +3714,7 @@ Transform:
   m_GameObject: {fileID: 1762197723}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -9, y: -5, z: 0}
-  m_LocalScale: {x: 0.07, y: 1, z: 1}
+  m_LocalScale: {x: 0.0348, y: 1, z: 1}
   m_Children:
   - {fileID: 1184718312}
   m_Father: {fileID: 1144328208}
@@ -3733,6 +3733,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cube: {fileID: 1184718311}
+  size: 1
 --- !u!1 &1774039454
 GameObject:
   m_ObjectHideFlags: 0

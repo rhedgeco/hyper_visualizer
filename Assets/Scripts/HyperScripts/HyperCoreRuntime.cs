@@ -50,8 +50,8 @@ namespace HyperScripts
 
         internal static void TimelineFrameUpdate(float value)
         {
-            double[] specL = AudioManager.GetSpectrumData(AudioManager.Source.timeSamples, 1024, 0);
-            double[] specR = AudioManager.GetSpectrumData(AudioManager.Source.timeSamples, 1024, 1);
+            double[] specL = AudioManager.GetSpectrumData(AudioManager.Source.timeSamples, 2048, 0);
+            double[] specR = AudioManager.GetSpectrumData(AudioManager.Source.timeSamples, 2048, 1);
             UpdateHyperFrame(value, 0f, specL, specR, 0f);
         }
         
