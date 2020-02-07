@@ -14,7 +14,7 @@ namespace HyperScripts.Managers
                 _timeline = value;
                 _timeline.OnRetargetSlider.RemoveAllListeners();
                 _timeline.onValueChanged.RemoveAllListeners();
-                _timeline.onValueChanged.AddListener(HyperCoreRuntime.UpdateHyperFrame);
+                _timeline.onValueChanged.AddListener(HyperCoreRuntime.TimelineFrameUpdate);
                 _timeline.OnRetargetSlider.AddListener(AudioManager.UpdateAudioToTimeline);
             }
         }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.IO;
 using HyperScripts.Threading;
+using Lomont;
 using UnityEngine;
 
 namespace HyperScripts.Managers
@@ -51,15 +52,8 @@ namespace HyperScripts.Managers
             Clip.GetData(_samples, 0);
         }
 
-        internal static IEnumerator ImportAudioRoutine(string path)
+        internal static void ImportAudioThreaded(string path)
         {
-            if (!File.Exists(path))
-            {
-                Debug.LogError($"File '{path}' could not be found.");
-                StatusManager.UpdateStatus($"File '{path}' could not be found.");
-                yield break;
-            }
-
             AudioDecodeWorker worker = new AudioDecodeWorker(path, 
                 Path.Combine(Application.persistentDataPath, "TempConversion"),
                 (sampleArray, channels, samplerate) =>
@@ -74,6 +68,18 @@ namespace HyperScripts.Managers
             });
             
             HyperThreadDispatcher.StartWorker(worker);
+        }
+
+        internal static double[] GetSpectrumData(int startIndex, int length, int channel)
+        {
+            double[] spec = new double[length];
+            for (int i = 0; i < spec.Length; i++)
+            {
+                spec[i] = _samples[(startIndex * 2) + (i * 2) + channel];
+            }
+            LomontFFT fft = new LomontFFT();
+            fft.RealFFT(spec, false);
+            return spec;
         }
 
         internal static float[] GetPartialSampleArray(int startIndex, int length)

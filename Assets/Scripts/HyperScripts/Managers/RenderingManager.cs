@@ -10,7 +10,7 @@ namespace HyperScripts.Managers
     public static class RenderingManager
     {
         public const float TimelineSliderMaxValue = 0.9999f;
-        
+
         private static int _fps = 30;
 
         public static int Fps
@@ -25,9 +25,10 @@ namespace HyperScripts.Managers
         }
 
         public static bool Rendering { get; private set; }
-        
+
         internal static IEnumerator RenderRoutine(string outputPath)
         {
+            HyperCoreRuntime.DisableSound();
             AudioClip clip = AudioManager.Clip;
             float length = clip.length;
             int channels = clip.channels;
@@ -62,7 +63,7 @@ namespace HyperScripts.Managers
             FixedIntervalClock clock = new FixedIntervalClock(Fps);
 
             OverlayManager.Loading.StartLoading("Rendering HyperVisualization\n\n" +
-                                                   $"frame: 0/{(int) (length * Fps)}");
+                                                $"frame: 0/{(int) (length * Fps)}");
             StatusManager.UpdateStatus("Rendering HyperVideo");
             yield return new WaitForEndOfFrame();
 
@@ -71,7 +72,9 @@ namespace HyperScripts.Managers
             for (int frame = 0; frame <= length * Fps; frame++)
             {
                 yield return new WaitForEndOfFrame();
-                HyperCoreRuntime.UpdateHyperFrame(frame / length * Fps);
+                HyperCoreRuntime.UpdateHyperFrame(frame / length * Fps,
+                    0f, AudioManager.GetSpectrumData(samplesPerFrame * frame / channels, 1024, 0),
+                    AudioManager.GetSpectrumData(samplesPerFrame * frame / channels, 1024, 1), 0f);
                 long timestamp = clock.Timestamp;
                 Texture2D fTex = MainRenderer.GetFrame();
                 float[] commitSamples = AudioManager.GetPartialSampleArray(samplesPerFrame * frame, samplesPerFrame);
@@ -82,11 +85,12 @@ namespace HyperScripts.Managers
                 float percent = (float) frame / (int) (length * Fps);
                 StatusManager.UpdateStatus($"Generated Frame {frame}/{(int) (length * Fps)}");
                 OverlayManager.Loading.UpdateLoading("Rendering HyperVisualization\n\n" +
-                                                        $"frame: {frame}/{(int) (length * Fps)}", percent);
+                                                     $"frame: {frame}/{(int) (length * Fps)}", percent);
             }
 
             OverlayManager.Loading.UpdateLoading("Finalizing Export", 1);
             recorder.Dispose();
+            HyperCoreRuntime.EnableSound();
         }
     }
 }

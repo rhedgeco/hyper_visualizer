@@ -11,14 +11,17 @@ namespace HyperScripts
     {
         public float Amplitude { get; }
 
-        public float[] Spectrum { get; }
+        public double[] SpectrumLeft { get; }
+        
+        public double[] SpectrumRight { get; }
 
         public float HyperValue { get; }
 
-        public HyperValues(float amplitude, float[] spectrum, float hyperValue)
+        public HyperValues(float amplitude, double[] spectrumLeft, double[] spectrumRight, float hyperValue)
         {
             Amplitude = amplitude;
-            Spectrum = spectrum;
+            SpectrumLeft = spectrumLeft;
+            SpectrumRight = spectrumRight;
             HyperValue = hyperValue;
         }
     }

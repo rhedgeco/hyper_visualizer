@@ -3,7 +3,8 @@
     "references": [
         "NatCorder",
         "SFB",
-        "NAudioPlugin"
+        "NAudioPlugin",
+        "Lomont"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using HyperScripts.Managers;
+using Lomont;
 using SFB;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ namespace HyperScripts
     public class HyperCoreRuntime : MonoBehaviour
     {
         private static HyperCoreRuntime _instance;
+
+        private static AudioListener _listener;
         
         [SerializeField] private TimelineSlider timelineSlider;
         [SerializeField] private AudioClip startupAudio;
@@ -29,6 +32,8 @@ namespace HyperScripts
 
             // Set up TimelineManager
             TimelineManager.Timeline = timelineSlider;
+            
+            _listener = gameObject.AddComponent<AudioListener>();
         }
 
         private void Update()
@@ -43,11 +48,19 @@ namespace HyperScripts
             AudioManager.UpdateAudioState();
             TimelineManager.UpdateTimelineState();
         }
+
+        internal static void TimelineFrameUpdate(float value)
+        {
+            double[] specL = AudioManager.GetSpectrumData(AudioManager.Source.timeSamples, 1024, 0);
+            double[] specR = AudioManager.GetSpectrumData(AudioManager.Source.timeSamples, 1024, 1);
+            UpdateHyperFrame(value, 0f, specL, specR, 0f);
+        }
         
-        internal static void UpdateHyperFrame(float value)
+        internal static void UpdateHyperFrame(float value, float amplitude,
+            double[] spectrumLeft, double[] spectrumRight, float hyper)
         {
             HyperCore.Time = HyperCore.TotalTime * value;
-            HyperValues values = new HyperValues(0f, new float[2], 1f);
+            HyperValues values = new HyperValues(amplitude, spectrumLeft, spectrumRight, hyper);
             HyperCore.BeginFrame.Invoke(values);
             HyperCore.UpdateFrame.Invoke(values);
             HyperCore.EndFrame.Invoke(values);
@@ -61,8 +74,8 @@ namespace HyperScripts
                 new ExtensionFilter("Audio Files", "wav", "WAV", "mp3", "MP3"),
                 new ExtensionFilter("All Files", "*"),
             }, false)[0];
-            
-            StartCoroutine(AudioManager.ImportAudioRoutine(path));
+
+            AudioManager.ImportAudioThreaded(path);
         }
 
         public void RenderFootage()
@@ -80,6 +93,16 @@ namespace HyperScripts
             }
 
             StartCoroutine(RenderingManager.RenderRoutine(path));
+        }
+
+        internal static void DisableSound()
+        {
+//            AudioListener.volume = 0;
+        }
+
+        internal static void EnableSound()
+        {
+//            AudioListener.volume = 1;
         }
     }
 }

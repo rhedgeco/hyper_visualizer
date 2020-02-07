@@ -60,6 +60,11 @@ namespace HyperScripts.Threading
 
         protected override void ThreadBody()
         {
+            if (!File.Exists(path))
+            {
+                throw new Exception($"File '{path}' could not be found.");
+            }
+            
             WaveFileReader reader;
             if (Path.HasExtension(path) &&
                 // ReSharper disable once PossibleNullReferenceException
