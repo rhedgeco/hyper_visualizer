@@ -53,19 +53,19 @@ namespace HyperScripts.Managers
 
         internal static void ImportAudioThreaded(string path)
         {
-            AudioDecodeWorker worker = new AudioDecodeWorker(path, 
+            AudioDecodeWorker worker = new AudioDecodeWorker(path,
                 Path.Combine(Application.persistentDataPath, "TempConversion"),
                 (sampleArray, channels, samplerate) =>
-            {
-                AudioClip clip = AudioClip.Create(Path.GetFileNameWithoutExtension(path),
-                    sampleArray.Length / channels, channels, samplerate, false);
-                clip.SetData(sampleArray, 0);
-                HyperCore.TotalTime = clip.length;
-                Source.clip = clip;
-                _samples = sampleArray;
-                StatusManager.UpdateStatus("Loaded Audio Data.");
-            });
-            
+                {
+                    AudioClip clip = AudioClip.Create(Path.GetFileNameWithoutExtension(path),
+                        sampleArray.Length / channels, channels, samplerate, false);
+                    clip.SetData(sampleArray, 0);
+                    HyperCore.TotalTime = clip.length;
+                    Source.clip = clip;
+                    _samples = sampleArray;
+                    StatusManager.UpdateStatus("Loaded Audio Data.");
+                });
+
             HyperThreadDispatcher.StartWorker(worker);
         }
 
@@ -83,6 +83,30 @@ namespace HyperScripts.Managers
             if (Samples.Length - startIndex < length) length = Samples.Length - startIndex;
             Array.Copy(Samples, startIndex, partial, 0, length);
             return partial;
+        }
+
+        internal static float GetMaxValueInSamples(float[] samples, bool absoluteValue = true)
+        {
+            float max = samples[0];
+            foreach (float sample in samples)
+            {
+                float s = absoluteValue ? Mathf.Abs(sample) : sample;
+                if (sample > max) max = sample;
+            }
+
+            return max;
+        }
+        
+        internal static float GetMaxValueInSamplesFromSource(int startIndex, int length, bool absoluteValue = true)
+        {
+            float max = _samples[startIndex];
+            for (int i = startIndex; i < startIndex + length; i++)
+            {
+                float s = absoluteValue ? Mathf.Abs(_samples[i]) : _samples[i];
+                if (_samples[i] > max) max = _samples[i];
+            }
+
+            return max;
         }
 
         internal static void UpdateAudioState()

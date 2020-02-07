@@ -846,7 +846,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 698.99994, y: 393.18747}
+  m_SizeDelta: {x: 759.1111, y: 427}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &292461305
 MonoBehaviour:
@@ -3305,7 +3305,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1583312172}
   - component: {fileID: 1583312171}
-  - component: {fileID: 1583312173}
   m_Layer: 0
   m_Name: HyperCoreManager
   m_TagString: Untagged
@@ -3347,14 +3346,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!81 &1583312173
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1583312170}
-  m_Enabled: 1
 --- !u!1 &1615855809
 GameObject:
   m_ObjectHideFlags: 0
@@ -3401,6 +3392,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1654783142}
   - component: {fileID: 1654783143}
+  - component: {fileID: 1654783139}
   m_Layer: 0
   m_Name: Tiger
   m_TagString: Untagged
@@ -3408,6 +3400,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1654783139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1654783138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e884b67696922c9478b77326768fd63b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetScale: 1.5
+  smoothTime: 5
 --- !u!4 &1654783142
 Transform:
   m_ObjectHideFlags: 0

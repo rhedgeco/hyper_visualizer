@@ -10,7 +10,7 @@ namespace HyperScripts
         private static HyperCoreRuntime _instance;
 
         private static AudioListener _listener;
-        
+
         [SerializeField] private TimelineSlider timelineSlider;
         [SerializeField] private AudioClip startupAudio;
         [SerializeField] private float arrowSkipAmount = 5f;
@@ -31,7 +31,7 @@ namespace HyperScripts
 
             // Set up TimelineManager
             TimelineManager.Timeline = timelineSlider;
-            
+
             _listener = gameObject.AddComponent<AudioListener>();
         }
 
@@ -43,18 +43,25 @@ namespace HyperScripts
             if (Input.GetButtonDown("TimelineRight"))
                 TimelineManager.Timeline.value += arrowSkipAmount / AudioManager.Clip.length;
             if (Input.GetButtonDown("PlayPause")) AudioManager.TogglePlay();
-            
+
             AudioManager.UpdateAudioState();
             TimelineManager.UpdateTimelineState();
         }
 
         internal static void TimelineFrameUpdate(float value)
         {
+            // Get frame amplitude
+            float amplitude = AudioManager.GetMaxValueInSamplesFromSource(AudioManager.Source.timeSamples,
+                AudioManager.Clip.frequency / RenderingManager.Fps * AudioManager.Clip.channels);
+            
+            // Get spectrum data for frame
             double[] specL = AudioManager.GetSpectrumData(AudioManager.Source.timeSamples, 2048, 0);
             double[] specR = AudioManager.GetSpectrumData(AudioManager.Source.timeSamples, 2048, 1);
-            UpdateHyperFrame(value, 0f, specL, specR, 0f);
+            
+            // Apply data to a HyperUpdate
+            UpdateHyperFrame(value, amplitude, specL, specR, 0f);
         }
-        
+
         internal static void UpdateHyperFrame(float value, float amplitude,
             double[] spectrumLeft, double[] spectrumRight, float hyper)
         {
