@@ -4,7 +4,7 @@ namespace Plugins.Free.FFT
 {
     public static class Windowing
     {
-        public static double[] HackyRyanBlackmanWindow(float[] samples, int startIndex, int length, int channel)
+        public static double[] HackyRyanWindow(float[] samples, int startIndex, int length, int channel, float sharpness = 1)
         {
             double[] spec = new double[length];
             for (int i = 0; i < length; i++)
@@ -14,7 +14,7 @@ namespace Plugins.Free.FFT
                 if (index < samples.Length - 1)
                 {
                     x = samples[index];
-                    x *= (-Math.Cos(i * (2d * Math.PI) / length) + 1d) / 2d;
+                    x *= Math.Pow((-Math.Cos(i * (2d * Math.PI) / length) + 1d) / 2d, sharpness);
                 }
                 spec[i] = x;
             }
