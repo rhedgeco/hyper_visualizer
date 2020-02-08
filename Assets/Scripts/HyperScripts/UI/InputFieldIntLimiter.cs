@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace UI
@@ -12,7 +13,15 @@ namespace UI
         [SerializeField] private int minValue;
         [SerializeField] private int maxValue;
 
-        private void Awake()
+        private ValueConfirmedEvent confirmedEvent = new ValueConfirmedEvent();
+
+        protected ValueConfirmedEvent ConfirmedEvent => confirmedEvent;
+
+        protected class ValueConfirmedEvent : UnityEvent<int>
+        {
+        }
+
+        protected void Awake()
         {
             field = GetComponent<InputField>();
             field.onValueChanged.AddListener(ValueChanged);

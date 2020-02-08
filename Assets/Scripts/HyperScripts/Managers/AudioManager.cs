@@ -15,6 +15,8 @@ namespace HyperScripts.Managers
 
         public static bool Playing { get; private set; }
 
+        internal static int FftSmoothing { get; set; } = 8;
+
         internal static AudioClip Clip => Source.clip;
 
         internal static AudioSource Source
@@ -71,7 +73,7 @@ namespace HyperScripts.Managers
 
         internal static double[] GetSpectrumData(int startIndex, int length, int channel)
         {
-            double[] spec = Windowing.HackyRyanWindow(_samples, startIndex, length, channel, 8);
+            double[] spec = Windowing.HackyRyanWindow(_samples, startIndex, length, channel, FftSmoothing);
             LomontFFT fft = new LomontFFT();
             fft.RealFFT(spec, true);
             return spec;
