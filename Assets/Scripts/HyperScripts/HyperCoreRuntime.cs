@@ -28,6 +28,7 @@ namespace HyperScripts
             // Set up AudioManager
             AudioManager.Source = gameObject.AddComponent<AudioSource>();
             AudioManager.DefaultAudio = startupAudio;
+            AudioManager.PurgeFftCache();
 
             // Set up TimelineManager
             TimelineManager.Timeline = timelineSlider;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using HyperScripts.Threading;
 using Plugins.Free.FFT;
@@ -10,12 +11,22 @@ namespace HyperScripts.Managers
     {
         private static AudioSource _source;
         private static float[] _samples;
-        
+        private static List<double[][]> _fftCache = new List<double[][]>();
+        private static int _fftSmoothing = 8;
+
         public static string AudioTitle => Source.clip.name;
 
         public static bool Playing { get; private set; }
 
-        internal static int FftSmoothing { get; set; } = 8;
+        internal static int FftSmoothing
+        {
+            get => _fftSmoothing;
+            set
+            {
+                _fftSmoothing = value; 
+                PurgeFftCache();
+            }
+        }
 
         internal static AudioClip Clip => Source.clip;
 
@@ -37,6 +48,10 @@ namespace HyperScripts.Managers
                 RecalculateSamples();
             }
         }
+
+        internal static int CachedFftFrames => _fftCache.Count;
+
+        internal static bool CanCache { get; set; } = true;
 
         private static float[] Samples
         {
@@ -71,6 +86,15 @@ namespace HyperScripts.Managers
             HyperThreadDispatcher.StartWorker(worker);
         }
 
+        internal static void CacheFftThreaded()
+        {
+            CanCache = false;
+            FftCachingWorker worker =
+                new FftCachingWorker(_samples, RenderingManager.FrameCount, 8192, FftSmoothing);
+            
+            HyperThreadDispatcher.StartWorker(worker);
+        }
+
         internal static double[] GetSpectrumData(int startIndex, int length, int channel)
         {
             double[] spec = Windowing.HackyRyanWindow(_samples, startIndex, length, channel, FftSmoothing);
@@ -98,7 +122,7 @@ namespace HyperScripts.Managers
 
             return max;
         }
-        
+
         internal static float GetMaxValueInSamplesFromSource(int startIndex, int length, bool absoluteValue = true)
         {
             float max = _samples[startIndex];
@@ -114,7 +138,7 @@ namespace HyperScripts.Managers
         internal static void UpdateAudioState()
         {
             if (RenderingManager.Rendering) return;
-            
+
             if (Playing)
             {
                 if (!Source.isPlaying) Source.Play();
@@ -141,7 +165,18 @@ namespace HyperScripts.Managers
             Source.timeSamples = sampleTarget;
         }
 
-        public static void TogglePlay()
+        internal static void PurgeFftCache()
+        {
+            _fftCache.Clear();
+            CanCache = true;
+        }
+
+        internal static void AddFftCache(double[][] cacheFrame)
+        {
+            _fftCache.Add(cacheFrame);
+        }
+
+        internal static void TogglePlay()
         {
             if (RenderingManager.Rendering) return;
             if (!Playing && Source.timeSamples >= Clip.samples - Clip.channels)
@@ -152,7 +187,7 @@ namespace HyperScripts.Managers
             else Playing = !Playing;
         }
 
-        public static void StopPlaying()
+        internal static void StopPlaying()
         {
             Playing = false;
             Source.Stop();
@@ -160,9 +195,9 @@ namespace HyperScripts.Managers
             TimelineManager.UpdateTimelineState();
         }
 
-        public static void SkipTime(float time)
+        internal static void SkipTime(float time)
         {
-            int targetTime = Source.timeSamples + (int)(time * Clip.frequency);
+            int targetTime = Source.timeSamples + (int) (time * Clip.frequency);
             if (targetTime < 0) targetTime = 0;
             if (targetTime > Clip.samples - Clip.channels) targetTime = Clip.samples - Clip.channels;
             Source.timeSamples = targetTime;

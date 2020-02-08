@@ -9,8 +9,6 @@ namespace HyperScripts.Managers
 {
     public static class RenderingManager
     {
-        public const float TimelineSliderMaxValue = 0.9999f;
-
         private static int _fps = 30;
 
         public static int Fps
@@ -21,15 +19,17 @@ namespace HyperScripts.Managers
                 if (value > 99) _fps = 99;
                 if (value < 1) _fps = 1;
                 _fps = value;
+                AudioManager.PurgeFftCache();
             }
         }
 
         public static bool Rendering { get; private set; }
 
+        public static int FrameCount => Mathf.CeilToInt(AudioManager.Clip.length * Fps);
+
         internal static IEnumerator RenderRoutine(string outputPath)
         {
             AudioClip clip = AudioManager.Clip;
-            float length = clip.length;
             int channels = clip.channels;
             int audioSamples = clip.frequency;
             int samplesPerFrame = audioSamples / Fps * channels;
@@ -62,35 +62,35 @@ namespace HyperScripts.Managers
             FixedIntervalClock clock = new FixedIntervalClock(Fps);
 
             OverlayManager.Loading.StartLoading("Rendering HyperVisualization\n\n" +
-                                                $"frame: 0/{(int) (length * Fps)}");
+                                                $"frame: 0/{(int) (FrameCount)}");
             StatusManager.UpdateStatus("Rendering HyperVideo");
             yield return new WaitForEndOfFrame();
 
             Rendering = true;
             AudioManager.StopPlaying();
-            for (int frame = 0; frame <= length * Fps; frame++)
+            for (int frame = 0; frame <= FrameCount; frame++)
             {
                 yield return new WaitForEndOfFrame();
-                
+
                 long timestamp = clock.Timestamp;
                 Texture2D fTex = MainRenderer.GetFrame();
                 float[] commitSamples = AudioManager.GetPartialSampleArray(samplesPerFrame * frame, samplesPerFrame);
 
-                HyperCoreRuntime.UpdateHyperFrame(frame / (length * Fps),
+                HyperCoreRuntime.UpdateHyperFrame((float) frame / FrameCount,
                     AudioManager.GetMaxValueInSamples(commitSamples),
                     AudioManager.GetSpectrumData(samplesPerFrame * frame / channels, 8192, 0),
                     AudioManager.GetSpectrumData(samplesPerFrame * frame / channels, 8192, 1),
                     0f
                 );
-                
+
                 recorder.CommitFrame(fTex.GetPixels32(), timestamp);
                 recorder.CommitSamples(commitSamples, timestamp);
                 Object.DestroyImmediate(fTex);
 
-                float percent = (float) frame / (int) (length * Fps);
-                StatusManager.UpdateStatus($"Generated Frame {frame}/{(int) (length * Fps)}");
+                float percent = (float) frame / (int) (FrameCount);
+                StatusManager.UpdateStatus($"Generated Frame {frame}/{(int) (FrameCount)}");
                 OverlayManager.Loading.UpdateLoading("Rendering HyperVisualization\n\n" +
-                                                     $"frame: {frame}/{(int) (length * Fps)}", percent);
+                                                     $"frame: {frame}/{(int) (FrameCount)}", percent);
             }
 
             OverlayManager.Loading.UpdateLoading("Finalizing Export", 1);
