@@ -1,6 +1,6 @@
 using HyperScripts.Managers;
 
-namespace UI
+namespace HyperScripts.UI
 {
     public class FftSmoothingInput : InputFieldIntLimiter
     {
@@ -10,7 +10,7 @@ namespace UI
             ConfirmedEvent.AddListener(UpdateFftSmoothing);
         }
 
-        private void UpdateFftSmoothing(int value)
+        private static void UpdateFftSmoothing(int value)
         {
             AudioManager.FftSmoothing = value;
         }

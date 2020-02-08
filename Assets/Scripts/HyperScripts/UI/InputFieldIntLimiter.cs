@@ -1,9 +1,8 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace UI
+namespace HyperScripts.UI
 {
     [RequireComponent(typeof(InputField))]
     public class InputFieldIntLimiter : MonoBehaviour
@@ -46,6 +45,7 @@ namespace UI
             if (value < minValue) value = minValue;
 
             field.text = "" + value;
+            ConfirmedEvent.Invoke(value);
         }
     }
 }

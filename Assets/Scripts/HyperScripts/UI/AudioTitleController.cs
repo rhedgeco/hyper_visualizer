@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace HyperScripts.UI
 {
     [RequireComponent(typeof(Text))]
     public class AudioTitleController : MonoBehaviour

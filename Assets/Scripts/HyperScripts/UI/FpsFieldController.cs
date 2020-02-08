@@ -1,9 +1,8 @@
-﻿using System;
-using HyperScripts.Managers;
+﻿using HyperScripts.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace HyperScripts.UI
 {
     [RequireComponent(typeof(InputField))]
     public class FpsFieldController : MonoBehaviour

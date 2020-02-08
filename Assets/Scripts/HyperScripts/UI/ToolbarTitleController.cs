@@ -1,8 +1,7 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace HyperScripts.UI
 {
     [RequireComponent(typeof(Button))]
     public class ToolbarTitleController : MonoBehaviour
