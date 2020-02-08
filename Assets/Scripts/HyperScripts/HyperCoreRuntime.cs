@@ -39,9 +39,9 @@ namespace HyperScripts
         {
             // Handle keyboard control over the timeline
             if (Input.GetButtonDown("TimelineLeft"))
-                TimelineManager.Timeline.value -= arrowSkipAmount / AudioManager.Clip.length;
+                AudioManager.SkipTime(-arrowSkipAmount);
             if (Input.GetButtonDown("TimelineRight"))
-                TimelineManager.Timeline.value += arrowSkipAmount / AudioManager.Clip.length;
+                AudioManager.SkipTime(arrowSkipAmount);
             if (Input.GetButtonDown("PlayPause")) AudioManager.TogglePlay();
 
             AudioManager.UpdateAudioState();
@@ -53,11 +53,11 @@ namespace HyperScripts
             // Get frame amplitude
             float amplitude = AudioManager.GetMaxValueInSamplesFromSource(AudioManager.Source.timeSamples,
                 AudioManager.Clip.frequency / RenderingManager.Fps * AudioManager.Clip.channels);
-            
+
             // Get spectrum data for frame
-            double[] specL = AudioManager.GetSpectrumData(AudioManager.Source.timeSamples, 2048, 0);
-            double[] specR = AudioManager.GetSpectrumData(AudioManager.Source.timeSamples, 2048, 1);
-            
+            double[] specL = AudioManager.GetSpectrumData(AudioManager.Source.timeSamples, 8192, 0);
+            double[] specR = AudioManager.GetSpectrumData(AudioManager.Source.timeSamples, 8192, 1);
+
             // Apply data to a HyperUpdate
             UpdateHyperFrame(value, amplitude, specL, specR, 0f);
         }
@@ -99,16 +99,6 @@ namespace HyperScripts
             }
 
             StartCoroutine(RenderingManager.RenderRoutine(path));
-        }
-
-        internal static void DisableSound()
-        {
-//            AudioListener.volume = 0;
-        }
-
-        internal static void EnableSound()
-        {
-//            AudioListener.volume = 1;
         }
     }
 }

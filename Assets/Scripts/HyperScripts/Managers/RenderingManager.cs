@@ -28,7 +28,6 @@ namespace HyperScripts.Managers
 
         internal static IEnumerator RenderRoutine(string outputPath)
         {
-            HyperCoreRuntime.DisableSound();
             AudioClip clip = AudioManager.Clip;
             float length = clip.length;
             int channels = clip.channels;
@@ -79,8 +78,8 @@ namespace HyperScripts.Managers
 
                 HyperCoreRuntime.UpdateHyperFrame(frame / (length * Fps),
                     AudioManager.GetMaxValueInSamples(commitSamples),
-                    AudioManager.GetSpectrumData(samplesPerFrame * frame / channels, 2048, 0),
-                    AudioManager.GetSpectrumData(samplesPerFrame * frame / channels, 2048, 1),
+                    AudioManager.GetSpectrumData(samplesPerFrame * frame / channels, 8192, 0),
+                    AudioManager.GetSpectrumData(samplesPerFrame * frame / channels, 8192, 1),
                     0f
                 );
                 
@@ -96,7 +95,6 @@ namespace HyperScripts.Managers
 
             OverlayManager.Loading.UpdateLoading("Finalizing Export", 1);
             recorder.Dispose();
-            HyperCoreRuntime.EnableSound();
         }
     }
 }

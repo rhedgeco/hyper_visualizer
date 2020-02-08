@@ -71,7 +71,7 @@ namespace HyperScripts.Managers
 
         internal static double[] GetSpectrumData(int startIndex, int length, int channel)
         {
-            double[] spec = Windowing.HackyRyanBlackmanWindow(_samples, startIndex, length, channel);
+            double[] spec = Windowing.HackyRyanWindow(_samples, startIndex, length, channel, 12);
             LomontFFT fft = new LomontFFT();
             fft.RealFFT(spec, true);
             return spec;
@@ -111,19 +111,22 @@ namespace HyperScripts.Managers
 
         internal static void UpdateAudioState()
         {
-            if (!RenderingManager.Rendering)
+            if (RenderingManager.Rendering) return;
+            
+            if (Playing)
             {
-                if (Playing)
-                {
-                    if (!Source.isPlaying) Source.Play();
-                }
-                else
-                {
-                    if (Source.isPlaying) Source.Pause();
-                }
+                if (!Source.isPlaying) Source.Play();
+            }
+            else
+            {
+                if (Source.isPlaying) Source.Pause();
+            }
 
-                if (TimelineManager.Timeline.value >= RenderingManager.TimelineSliderMaxValue)
-                    Playing = false; // Stop playing if clip is past due
+            if (Source.timeSamples >= Clip.samples - (Clip.frequency / 10))
+            {
+                Playing = false; // Stop playing if clip is past due
+                Source.Pause();
+                Source.timeSamples = Clip.samples - Clip.channels;
             }
         }
 
@@ -139,9 +142,9 @@ namespace HyperScripts.Managers
         public static void TogglePlay()
         {
             if (RenderingManager.Rendering) return;
-            if (!Playing && TimelineManager.Timeline.value >= RenderingManager.TimelineSliderMaxValue)
+            if (!Playing && Source.timeSamples >= Clip.samples - Clip.channels)
             {
-                TimelineManager.Timeline.value = 0;
+                Source.timeSamples = 0;
                 Playing = true;
             }
             else Playing = !Playing;
@@ -153,6 +156,14 @@ namespace HyperScripts.Managers
             Source.Stop();
             Source.timeSamples = 0;
             TimelineManager.UpdateTimelineState();
+        }
+
+        public static void SkipTime(float time)
+        {
+            int targetTime = Source.timeSamples + (int)(time * Clip.frequency);
+            if (targetTime < 0) targetTime = 0;
+            if (targetTime > Clip.samples - Clip.channels) targetTime = Clip.samples - Clip.channels;
+            Source.timeSamples = targetTime;
         }
     }
 }
