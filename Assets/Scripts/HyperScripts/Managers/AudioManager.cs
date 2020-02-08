@@ -10,8 +10,12 @@ namespace HyperScripts.Managers
     {
         private static AudioSource _source;
         private static float[] _samples;
+        
+        public static string AudioTitle => Source.clip.name;
 
         public static bool Playing { get; private set; }
+
+        internal static AudioClip Clip => Source.clip;
 
         internal static AudioSource Source
         {
@@ -23,8 +27,6 @@ namespace HyperScripts.Managers
             }
         }
 
-        internal static AudioClip Clip => Source.clip;
-
         internal static AudioClip DefaultAudio
         {
             set
@@ -33,8 +35,6 @@ namespace HyperScripts.Managers
                 RecalculateSamples();
             }
         }
-
-        public static string AudioTitle => Source.clip.name;
 
         private static float[] Samples
         {
@@ -71,7 +71,7 @@ namespace HyperScripts.Managers
 
         internal static double[] GetSpectrumData(int startIndex, int length, int channel)
         {
-            double[] spec = Windowing.HackyRyanWindow(_samples, startIndex, length, channel, 12);
+            double[] spec = Windowing.HackyRyanWindow(_samples, startIndex, length, channel, 8);
             LomontFFT fft = new LomontFFT();
             fft.RealFFT(spec, true);
             return spec;
