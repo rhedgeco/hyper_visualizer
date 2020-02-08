@@ -48,13 +48,16 @@ namespace HyperScripts.Threading
             AudioManager.PurgeFftCache();
             AudioManager.CanCache = false;
             StateProgress = 0;
-            int frameDelta = samples.Length / frameCount;
+            int frameDelta = samples.Length / frameCount / 2;
+            LomontFFT fft = new LomontFFT();
             for (int i = 0; i < frameCount; i++)
             {
                 if (AudioManager.CanCache)
                     throw new Exception("Cache purged before completed."); // Cancel thread if caching is reset
                 double[] cacheL = Windowing.HackyRyanWindow(samples, i * frameDelta, samplesPerFrame, 0, smoothing);
                 double[] cacheR = Windowing.HackyRyanWindow(samples, i * frameDelta, samplesPerFrame, 1, smoothing);
+                fft.RealFFT(cacheL, true);
+                fft.RealFFT(cacheR, true);
                 AudioManager.AddFftCache(new[] {cacheL, cacheR});
                 StateProgress = (float) i / frameCount;
             }

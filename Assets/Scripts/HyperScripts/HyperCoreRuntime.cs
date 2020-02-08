@@ -15,6 +15,10 @@ namespace HyperScripts
         [SerializeField] private AudioClip startupAudio;
         [SerializeField] private float arrowSkipAmount = 5f;
 
+        public static int CurrentFrame =>
+            Mathf.FloorToInt((float) AudioManager.Source.timeSamples / AudioManager.Clip.samples *
+                             RenderingManager.FrameCount);
+
         private void Awake()
         {
             // Set up singleton
@@ -55,9 +59,13 @@ namespace HyperScripts
             float amplitude = AudioManager.GetMaxValueInSamplesFromSource(AudioManager.Source.timeSamples,
                 AudioManager.Clip.frequency / RenderingManager.Fps * AudioManager.Clip.channels);
 
-            // Get spectrum data for frame
-            double[] specL = AudioManager.GetSpectrumData(AudioManager.Source.timeSamples, 8192, 0);
-            double[] specR = AudioManager.GetSpectrumData(AudioManager.Source.timeSamples, 8192, 1);
+            // Get spectrum data for frame, use cached if possible
+            double[] specL, specR;
+            if (!AudioManager.GetCachedFftFrame(CurrentFrame, out specL, 0))
+                specL = AudioManager.GetSpectrumData(AudioManager.Source.timeSamples, 8192, 0);
+
+            if (!AudioManager.GetCachedFftFrame(CurrentFrame, out specR, 1))
+                specR = AudioManager.GetSpectrumData(AudioManager.Source.timeSamples, 8192, 1);
 
             // Apply data to a HyperUpdate
             UpdateHyperFrame(value, amplitude, specL, specR, 0f);

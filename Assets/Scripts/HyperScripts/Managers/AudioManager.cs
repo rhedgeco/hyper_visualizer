@@ -176,6 +176,14 @@ namespace HyperScripts.Managers
             _fftCache.Add(cacheFrame);
         }
 
+        internal static bool GetCachedFftFrame(int frameNum, out double[] frame, int channel)
+        {
+            frame = new double[0];
+            if (_fftCache.Count <= frameNum) return false;
+            frame = _fftCache[frameNum][channel];
+            return true;
+        }
+
         internal static void TogglePlay()
         {
             if (RenderingManager.Rendering) return;
