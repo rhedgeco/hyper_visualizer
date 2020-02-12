@@ -27,6 +27,12 @@ namespace HyperScripts.UI
             field.onEndEdit.AddListener(EndEdit);
         }
 
+        public int GetValue()
+        {
+            int v = int.Parse(field.text);
+            return v;
+        }
+
         private void ValueChanged(string text)
         {
             // do nothing

@@ -56,7 +56,8 @@ namespace HyperScripts
         internal static void TimelineFrameUpdate(float value)
         {
             // Get frame amplitude
-            float amplitude = AudioManager.GetMaxValueInSamplesFromSource(AudioManager.Source.timeSamples,
+            float amplitude = AudioManager.GetMaxValueInSamplesFromSource(
+                AudioManager.Source.timeSamples * AudioManager.Clip.channels,
                 AudioManager.Clip.frequency / RenderingManager.Fps * AudioManager.Clip.channels);
 
             // Get spectrum data for frame, use cached if possible
