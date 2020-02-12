@@ -1,12 +1,13 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace HyperScripts.UI
 {
     [RequireComponent(typeof(Slider))]
     [ExecuteInEditMode]
-    public class HResizeBar : MonoBehaviour
+    public class HResizeBar : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         private Slider slider;
         private RectTransform parent;
@@ -15,6 +16,7 @@ namespace HyperScripts.UI
         [SerializeField] private RectTransform rightPanel;
         [SerializeField] private int leftMinPixel = 100;
         [SerializeField] private int rightMinPixel = 100;
+        [SerializeField] private Cursor dragCursor;
 
         private void Start()
         {
@@ -37,6 +39,16 @@ namespace HyperScripts.UI
 
             leftPanel.sizeDelta = new Vector2(r.width * slider.value, leftPanel.sizeDelta.y);
             rightPanel.sizeDelta = new Vector2(r.width * (1 - slider.value), rightPanel.sizeDelta.y);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            CursorController.SetCursor(CursorController.CursorType.LeftSlide);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            CursorController.ResetCursor();
         }
     }
 }
