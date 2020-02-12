@@ -1,4 +1,5 @@
 ﻿using System;
+using HyperScripts.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,7 +21,9 @@ namespace HyperScripts.UI
 
         private void ApplyResolution()
         {
-            Debug.Log(widthField.GetValue() + ", " + heightField.GetValue());
+            Vector2Int size = new Vector2Int(widthField.GetValue(),heightField.GetValue());
+            MainRenderer.ResizeFrame(size);
+            StatusManager.UpdateStatus($"Updated resolution to {size.x}x{size.y}");
         }
     }
 }

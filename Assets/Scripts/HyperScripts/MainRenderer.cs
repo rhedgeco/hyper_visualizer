@@ -43,6 +43,15 @@ namespace HyperScripts
             return RenderTextureToTexture2D(_mainCamera.targetTexture);
         }
 
+        internal static void ResizeFrame(Vector2Int size)
+        {
+            RenderTexture newTex = new RenderTexture(size.x, size.y, 24, RenderTextureFormat.Default,
+                RenderTextureReadWrite.Linear);
+            _mainCamera.targetTexture = newTex;
+            _instance._imageDisplay.texture = _mainCamera.targetTexture;
+            _mainCamera.Render();
+        }
+
         // Converts a RenderTexture to Texture2D
         private static Texture2D RenderTextureToTexture2D(RenderTexture rendTex)
         {
