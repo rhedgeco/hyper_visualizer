@@ -23,7 +23,7 @@ namespace HyperScripts.Managers
             get => _fftSmoothing;
             set
             {
-                _fftSmoothing = value; 
+                _fftSmoothing = value;
                 PurgeFftCache();
             }
         }
@@ -91,7 +91,7 @@ namespace HyperScripts.Managers
             CanCache = false;
             FftCachingWorker worker =
                 new FftCachingWorker(_samples, RenderingManager.FrameCount, 8192, FftSmoothing);
-            
+
             HyperThreadDispatcher.StartWorker(worker);
         }
 
@@ -107,7 +107,7 @@ namespace HyperScripts.Managers
         {
             float[] partial = new float[length];
             if (Samples.Length - startIndex < length) length = Samples.Length - startIndex;
-            Array.Copy(Samples, startIndex, partial, 0, length);
+            if (length != 0) Array.Copy(Samples, startIndex, partial, 0, length);
             return partial;
         }
 
