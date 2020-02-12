@@ -1001,7 +1001,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 582.10895, y: 327.43628}
+  m_SizeDelta: {x: 572, y: 321.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &292461305
 MonoBehaviour:
@@ -4967,7 +4967,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 582.10895, y: 0}
+  m_SizeDelta: {x: 572, y: 0}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!1 &1537028705
 GameObject:
@@ -5488,7 +5488,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 203.89108, y: 2}
+  m_SizeDelta: {x: 200, y: 2}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1711421310
 MonoBehaviour:
@@ -6395,7 +6395,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 12, y: 64}
+  m_SizeDelta: {x: 6, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1868429182
 MonoBehaviour:
@@ -6415,8 +6415,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6ee9e4d2c6cd637488b42384afed36b2, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 2530564911472380330, guid: 1b734e106309f554782f23a83c71c5c2,
+    type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -6941,10 +6942,10 @@ RectTransform:
   m_Father: {fileID: 348713840}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 20}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2075801933
 MonoBehaviour:
@@ -6992,7 +6993,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.7405966
+  m_Value: 0.74093264
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
