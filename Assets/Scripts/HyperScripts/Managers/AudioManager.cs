@@ -108,7 +108,7 @@ namespace HyperScripts.Managers
         {
             float[] partial = new float[length];
             if (Samples.Length - startIndex < length) length = Samples.Length - startIndex;
-            if (length != 0) Array.Copy(Samples, startIndex, partial, 0, length);
+            if (length >= 0) Array.Copy(Samples, startIndex, partial, 0, length);
             return partial;
         }
 
