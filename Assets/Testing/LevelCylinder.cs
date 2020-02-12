@@ -1,5 +1,6 @@
 ﻿using System;
 using HyperScripts;
+using HyperScripts.Core;
 using UnityEngine;
 
 public class LevelCylinder : MonoBehaviour

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using HyperScripts.Core;
 using HyperScripts.Managers;
 using SFB;
 using UnityEngine;

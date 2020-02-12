@@ -1,4 +1,5 @@
 ﻿using HyperScripts;
+using HyperScripts.Core;
 using UnityEngine;
 
 namespace Testing

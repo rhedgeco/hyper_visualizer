@@ -1,6 +1,6 @@
 ﻿using UnityEngine.Events;
 
-namespace HyperScripts
+namespace HyperScripts.Core
 {
     public static class HyperCore
     {

@@ -20,11 +20,7 @@ namespace HyperScripts
             if (_instance != this) Destroy(_instance);
             DontDestroyOnLoad(_instance);
 
-            _mainCamera = GetComponent<Camera>();
-            _mainCamera.targetTexture = new RenderTexture(1920, 1080, 24, RenderTextureFormat.Default,
-                RenderTextureReadWrite.Linear);
-            _imageDisplay.texture = _mainCamera.targetTexture;
-            _mainCamera.enabled = false;
+            ConnectCamera(GetComponent<Camera>());
         }
 
         private void Start()
@@ -60,6 +56,15 @@ namespace HyperScripts
             tex.ReadPixels(new Rect(0, 0, rendTex.width, rendTex.height), 0, 0);
             tex.Apply();
             return tex;
+        }
+
+        internal static void ConnectCamera(Camera camera)
+        {
+            _mainCamera = camera;
+            _mainCamera.targetTexture = new RenderTexture(1920, 1080, 24, RenderTextureFormat.Default,
+                RenderTextureReadWrite.Linear);
+            _instance._imageDisplay.texture = _mainCamera.targetTexture;
+            _mainCamera.enabled = false;
         }
     }
 }
