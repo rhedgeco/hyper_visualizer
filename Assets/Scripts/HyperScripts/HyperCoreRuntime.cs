@@ -2,6 +2,7 @@
 using HyperScripts.Core;
 using HyperScripts.Managers;
 using SFB;
+using UMod;
 using UnityEngine;
 
 namespace HyperScripts
@@ -110,6 +111,17 @@ namespace HyperScripts
             }
 
             StartCoroutine(RenderingManager.RenderRoutine(path));
+        }
+
+        public void ImportMod()
+        {
+            string path = StandaloneFileBrowser.OpenFilePanel("Open Visualiser...", "",
+                new[] {new ExtensionFilter("hvis")}, false)[0];
+            
+            if (!File.Exists(path))
+                StatusManager.UpdateStatus("Error opening mod.");
+
+            StartCoroutine(ModManager.LoadModAsync(path));
         }
     }
 }
