@@ -46,11 +46,6 @@ namespace HyperScripts
             gameObject.AddComponent<AudioListener>();
         }
 
-        private void Start()
-        {
-            SceneManager.LoadScene(1);
-        }
-
         private void Update()
         {
             // Handle keyboard control over the timeline

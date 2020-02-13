@@ -35,8 +35,6 @@ namespace HyperScripts.Managers
             StatusManager.UpdateStatus(!request.IsSuccessful
                 ? "Error loading Visualizer."
                 : $"Visualizer loaded {Path.GetFileNameWithoutExtension(path)}");
-
-            if (!request.IsSuccessful) SceneManager.LoadScene(1);
         }
     }
 }
