@@ -1,5 +1,5 @@
 ﻿using System;
-using hyper_engine;
+using HyperEngine;
 using UnityEngine;
 
 namespace DefaultVisualizer.data
