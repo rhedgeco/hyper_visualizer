@@ -36,7 +36,15 @@ namespace HyperScripts
 
         internal static void RenderFrame(Camera cam)
         {
-            cam.Render();
+            try
+            {
+                cam.Render();
+            }
+            catch (NullReferenceException)
+            {
+                // do nothing
+                // Sometimes post processing errors out on initial load. That is okay.
+            }
         }
 
         internal static Texture2D GetFrame(bool forceRender = false)
@@ -72,15 +80,7 @@ namespace HyperScripts
             _instance._imageDisplay.texture = _mainCamera.targetTexture;
             _mainCamera.enabled = false;
 
-            try
-            {
-                RenderFrame();
-            }
-            catch (Exception)
-            {
-                // do nothing
-                // Sometimes post processing errors out on initial load. That is okay.
-            }
+            RenderFrame();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace HyperScripts.Managers
         private static AudioSource _source;
         private static float[] _samples;
         private static List<double[][]> _fftCache = new List<double[][]>();
-        private static int _fftSmoothing = 8;
+        private static int _fftSmoothing = 20;
 
         public static string AudioTitle => Source.clip.name;
 

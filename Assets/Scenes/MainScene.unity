@@ -358,7 +358,7 @@ MonoBehaviour:
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
-  m_Text: 8
+  m_Text: 20
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
@@ -1132,7 +1132,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1004.70465, y: 565.14636}
+  m_SizeDelta: {x: 1001.0001, y: 563.06256}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &292461305
 MonoBehaviour:
@@ -3416,7 +3416,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 8
+  m_Text: 20
 --- !u!222 &1232333794
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4727,7 +4727,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1004.70465, y: 0}
+  m_SizeDelta: {x: 1001.0001, y: 0}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!1 &1537028705
 GameObject:
@@ -5188,7 +5188,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 351.29535, y: 2}
+  m_SizeDelta: {x: 350.00003, y: 2}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1711421310
 MonoBehaviour:
