@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using HyperScripts.Core;
+using hyper_engine;
 using HyperScripts.Threading;
 using Plugins.Free.FFT;
 using UnityEngine;
@@ -78,7 +78,7 @@ namespace HyperScripts.Managers
                     AudioClip clip = AudioClip.Create(Path.GetFileNameWithoutExtension(path),
                         sampleArray.Length / channels, channels, samplerate, false);
                     clip.SetData(sampleArray, 0);
-                    HyperCore.TotalTime = clip.length;
+                    HyperCoreRuntime.coreChange.SetTotalTime(clip.length);
                     Source.clip = clip;
                     _samples = sampleArray;
                     StatusManager.UpdateStatus("Loaded Audio Data.");

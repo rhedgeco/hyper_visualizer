@@ -1,10 +1,11 @@
 ﻿using System;
 using System.IO;
-using HyperScripts.Core;
+using hyper_engine;
 using HyperScripts.Managers;
 using SFB;
 using UMod;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace HyperScripts
 {
@@ -17,6 +18,8 @@ namespace HyperScripts
         [SerializeField] private TimelineSlider timelineSlider;
         [SerializeField] private AudioClip startupAudio;
         [SerializeField] private float arrowSkipAmount = 5f;
+        
+        public static HyperInternalAccessor coreChange = new HyperInternalAccessor();
 
         public static int CurrentFrame =>
             Mathf.FloorToInt((float) AudioManager.Source.timeSamples / AudioManager.Clip.samples *
@@ -30,7 +33,7 @@ namespace HyperScripts
             DontDestroyOnLoad(gameObject);
 
             // Set up HyperCore
-            HyperCore.TotalTime = startupAudio.length;
+            coreChange.SetTotalTime(startupAudio.length);
 
             // Set up AudioManager
             AudioManager.Source = gameObject.AddComponent<AudioSource>();
@@ -39,6 +42,10 @@ namespace HyperScripts
 
             // Set up TimelineManager
             TimelineManager.Timeline = timelineSlider;
+            
+            // Set up MainRenderer
+            HyperCore.ConnectMainCameraChanged(MainRenderer.ConnectCamera);
+            HyperCore.ConnectMainCameraChanged(MainRenderer.RenderFrame);
 
             _listener = gameObject.AddComponent<AudioListener>();
         }
@@ -78,11 +85,11 @@ namespace HyperScripts
         internal static void UpdateHyperFrame(float value, float amplitude,
             double[] spectrumLeft, double[] spectrumRight, float hyper)
         {
-            HyperCore.Time = HyperCore.TotalTime * value;
+            coreChange.SetTime(HyperCore.TotalTime * value);
             HyperValues values = new HyperValues(amplitude, spectrumLeft, spectrumRight, hyper);
-            
-            // TODO: Update module data
-            
+
+            coreChange.InvokeUpdate(values);
+
             MainRenderer.RenderFrame();
         }
 

@@ -30,7 +30,12 @@ namespace HyperScripts
 
         internal static void RenderFrame()
         {
-            _mainCamera.Render();
+            RenderFrame(_mainCamera);
+        }
+
+        internal static void RenderFrame(Camera cam)
+        {
+            cam.Render();
         }
 
         internal static Texture2D GetFrame(bool forceRender = false)

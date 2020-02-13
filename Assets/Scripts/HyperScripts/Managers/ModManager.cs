@@ -2,15 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using hyper_engine;
 using UMod;
 using UMod.Scripting;
+using UMod.Scripting.Runtime;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace HyperScripts.Managers
 {
     public static class ModManager
     {
-        public static List<Type> loadedHyperTypes;
-
         internal static IEnumerator LoadModAsync(string path)
         {
             if (!File.Exists(path))
@@ -32,10 +34,6 @@ namespace HyperScripts.Managers
             StatusManager.UpdateStatus(!request.IsSuccessful
                 ? "Error loading Visualizer."
                 : $"Visualizer loaded {Path.GetFileNameWithoutExtension(path)}");
-            if (!request.IsSuccessful) yield break;
-
-            ModHost host = request.Result;
-            // TODO: Figure out how to load mods effectively
         }
     }
 }
