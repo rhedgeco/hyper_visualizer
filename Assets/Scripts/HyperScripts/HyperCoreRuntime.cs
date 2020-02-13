@@ -1,19 +1,14 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using hyper_engine;
 using HyperScripts.Managers;
 using SFB;
-using UMod;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace HyperScripts
 {
     public class HyperCoreRuntime : MonoBehaviour
     {
         private static HyperCoreRuntime _instance;
-
-        private static AudioListener _listener;
 
         [SerializeField] private TimelineSlider timelineSlider;
         [SerializeField] private AudioClip startupAudio;
@@ -47,7 +42,7 @@ namespace HyperScripts
             HyperCore.ConnectMainCameraChanged(MainRenderer.ConnectCamera);
             HyperCore.ConnectMainCameraChanged(MainRenderer.RenderFrame);
 
-            _listener = gameObject.AddComponent<AudioListener>();
+            gameObject.AddComponent<AudioListener>();
         }
 
         private void Update()
