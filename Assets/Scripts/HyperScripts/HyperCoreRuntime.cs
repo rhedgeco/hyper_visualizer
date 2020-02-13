@@ -1,10 +1,8 @@
-﻿using System;
-using System.IO;
-using hyper_engine;
+﻿using System.IO;
+using HyperEngine;
 using HyperScripts.Managers;
 using SFB;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace HyperScripts
 {

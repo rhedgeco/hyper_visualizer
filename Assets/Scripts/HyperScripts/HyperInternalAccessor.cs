@@ -1,4 +1,5 @@
-using hyper_engine;
+using HyperEngine;
+using HyperEngine.Restricted;
 
 namespace HyperScripts
 {

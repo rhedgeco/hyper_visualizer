@@ -1,14 +1,7 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
-using hyper_engine;
 using UMod;
-using UMod.Scripting;
-using UMod.Scripting.Runtime;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using Object = UnityEngine.Object;
 
 namespace HyperScripts.Managers
 {

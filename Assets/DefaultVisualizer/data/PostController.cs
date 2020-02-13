@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using hyper_engine;
+using HyperEngine;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 

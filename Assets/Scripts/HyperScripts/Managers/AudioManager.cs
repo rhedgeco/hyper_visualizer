@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using hyper_engine;
 using HyperScripts.Threading;
 using Plugins.Free.FFT;
 using UnityEngine;
