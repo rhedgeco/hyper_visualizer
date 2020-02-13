@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using HyperScripts.Core;
 using HyperScripts.Managers;
 using SFB;
@@ -79,9 +80,9 @@ namespace HyperScripts
         {
             HyperCore.Time = HyperCore.TotalTime * value;
             HyperValues values = new HyperValues(amplitude, spectrumLeft, spectrumRight, hyper);
-            HyperCore.BeginFrame.Invoke(values);
-            HyperCore.UpdateFrame.Invoke(values);
-            HyperCore.EndFrame.Invoke(values);
+            
+            // TODO: Update module data
+            
             MainRenderer.RenderFrame();
         }
 

@@ -2,7 +2,7 @@
 
 namespace HyperScripts.Core
 {
-    public static class HyperCore
+    public class HyperCore
     {
         internal static HyperEvent BeginFrame { get; } = new HyperEvent();
         internal static HyperEvent UpdateFrame { get; } = new HyperEvent();
