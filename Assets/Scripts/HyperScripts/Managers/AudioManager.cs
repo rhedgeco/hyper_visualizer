@@ -129,8 +129,11 @@ namespace HyperScripts.Managers
             float max = _samples[startIndex];
             for (int i = startIndex; i < startIndex + length; i++)
             {
-                float s = absoluteValue ? Mathf.Abs(_samples[i]) : _samples[i];
-                if (_samples[i] > max) max = _samples[i];
+                if (i < _samples.Length)
+                {
+                    float s = absoluteValue ? Mathf.Abs(_samples[i]) : _samples[i];
+                    if (_samples[i] > max) max = _samples[i];
+                }
             }
 
             return max;

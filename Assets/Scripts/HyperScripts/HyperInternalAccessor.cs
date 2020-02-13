@@ -18,5 +18,10 @@ namespace HyperScripts
         {
             InvokeFrameUpdate(values);
         }
+
+        public void PurgeUpdates()
+        {
+            PurgeAllUpdateListeners();
+        }
     }
 }

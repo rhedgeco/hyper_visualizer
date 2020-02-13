@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace HyperScripts
@@ -70,6 +71,16 @@ namespace HyperScripts
                 RenderTextureReadWrite.Linear);
             _instance._imageDisplay.texture = _mainCamera.targetTexture;
             _mainCamera.enabled = false;
+
+            try
+            {
+                RenderFrame();
+            }
+            catch (Exception)
+            {
+                // do nothing
+                // Sometimes post processing errors out on initial load. That is okay.
+            }
         }
     }
 }

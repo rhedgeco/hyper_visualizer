@@ -1,8 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using hyper_engine;
 using HyperScripts.Managers;
 using SFB;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace HyperScripts
 {
@@ -13,7 +15,7 @@ namespace HyperScripts
         [SerializeField] private TimelineSlider timelineSlider;
         [SerializeField] private AudioClip startupAudio;
         [SerializeField] private float arrowSkipAmount = 5f;
-        
+
         public static HyperInternalAccessor coreChange = new HyperInternalAccessor();
 
         public static int CurrentFrame =>
@@ -37,12 +39,16 @@ namespace HyperScripts
 
             // Set up TimelineManager
             TimelineManager.Timeline = timelineSlider;
-            
+
             // Set up MainRenderer
             HyperCore.ConnectMainCameraChanged(MainRenderer.ConnectCamera);
-            HyperCore.ConnectMainCameraChanged(MainRenderer.RenderFrame);
 
             gameObject.AddComponent<AudioListener>();
+        }
+
+        private void Start()
+        {
+            SceneManager.LoadScene(1);
         }
 
         private void Update()
@@ -120,7 +126,7 @@ namespace HyperScripts
         {
             string path = StandaloneFileBrowser.OpenFilePanel("Open Visualiser...", "",
                 new[] {new ExtensionFilter("hvis")}, false)[0];
-            
+
             if (!File.Exists(path))
                 StatusManager.UpdateStatus("Error opening mod.");
 
