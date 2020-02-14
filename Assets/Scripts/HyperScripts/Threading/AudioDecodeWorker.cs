@@ -35,6 +35,7 @@ namespace HyperScripts.Threading
 
         internal override void ThreadCallbackStart()
         {
+            AudioManager.PurgeFftCache();
             OverlayManager.Loading.StartLoading($"Loading Audio File\n{audioName}");
         }
 

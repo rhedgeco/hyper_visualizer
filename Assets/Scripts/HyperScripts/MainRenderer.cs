@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 namespace HyperScripts
 {
-    [RequireComponent(typeof(Camera))]
     public class MainRenderer : MonoBehaviour
     {
         private static MainRenderer _instance;
@@ -20,13 +19,6 @@ namespace HyperScripts
             if (_instance == null) _instance = this;
             if (_instance != this) Destroy(_instance);
             DontDestroyOnLoad(_instance);
-
-            ConnectCamera(GetComponent<Camera>());
-        }
-
-        private void Start()
-        {
-            RenderFrame();
         }
 
         internal static void RenderFrame()
@@ -73,6 +65,19 @@ namespace HyperScripts
         }
 
         internal static void ConnectCamera(Camera camera)
+        {
+            int width = _mainCamera.targetTexture.width;
+            int height = _mainCamera.targetTexture.height;
+            _mainCamera = camera;
+            _mainCamera.targetTexture = new RenderTexture(width, height, 24, RenderTextureFormat.Default,
+                RenderTextureReadWrite.Linear);
+            _instance._imageDisplay.texture = _mainCamera.targetTexture;
+            _mainCamera.enabled = false;
+
+            RenderFrame();
+        }
+
+        internal static void ConnectDefaultCamera(Camera camera)
         {
             _mainCamera = camera;
             _mainCamera.targetTexture = new RenderTexture(2000, 2000, 24, RenderTextureFormat.Default,
