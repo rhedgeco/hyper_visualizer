@@ -20,6 +20,7 @@ namespace DefaultVisualizer.data
         [SerializeField] private float deltaRadius = 2;
         [SerializeField] private int circleSides = 3;
         [SerializeField] private float fadeSpeed = 0.1f;
+        [SerializeField] private float intensity = 2;
 
         private void Awake()
         {
@@ -46,8 +47,9 @@ namespace DefaultVisualizer.data
             for (int i = 3; i <= meshV.Length / 2; i += 2)
             {
                 int p = i;
+                double spec = Math.Atan(Math.Abs(values.SpectrumLeft[i - 1])) * intensity;
                 meshV[p] = Vector3.Lerp(meshV[p], meshVOriginal[p], fadeSpeed);
-                float target = (float) (deltaRadius * Math.Abs(values.SpectrumLeft[i - 1]) + circleRadius);
+                float target = (float) (deltaRadius * spec + circleRadius);
                 if ((meshVOriginal[p] * target).magnitude > meshV[p].magnitude) meshV[p] = meshVOriginal[p] * target;
                 meshV[p - 1] = meshV[p];
             }
@@ -55,33 +57,38 @@ namespace DefaultVisualizer.data
             for (int i = meshV.Length - 2; i > meshV.Length / 2 + 1; i -= 2)
             {
                 int p = i;
+                double spec = Math.Atan(Math.Abs(values.SpectrumRight[meshV.Length - i])) * intensity;
                 meshV[p] = Vector3.Lerp(meshV[p], meshVOriginal[p], fadeSpeed);
-                float target = (float) (deltaRadius * Math.Abs(values.SpectrumRight[meshV.Length - i]) + circleRadius);
+                float target = (float) (deltaRadius * spec + circleRadius);
                 if ((meshVOriginal[p] * target).magnitude > meshV[p].magnitude) meshV[p] = meshVOriginal[p] * target;
                 meshV[p - 1] = meshV[p];
             }
 
             int p1 = 1;
+            double spec1 = Math.Atan(Math.Abs(values.SpectrumLeft[0])) * intensity;
             meshV[p1] = Vector3.Lerp(meshV[p1], meshVOriginal[p1], fadeSpeed);
             float target1 = (float) (deltaRadius * Math.Abs(values.SpectrumLeft[0]) + circleRadius);
             if ((meshVOriginal[p1] * target1).magnitude > meshV[p1].magnitude) meshV[p1] = meshVOriginal[p1] * target1;
 
             p1 = meshV.Length - 1;
+            spec1 = Math.Atan(Math.Abs(values.SpectrumLeft[0])) * intensity;
             meshV[p1] = Vector3.Lerp(meshV[p1], meshVOriginal[p1], fadeSpeed);
             target1 = (float) (deltaRadius * Math.Abs(values.SpectrumRight[0]) + circleRadius);
             if ((meshVOriginal[p1] * target1).magnitude > meshV[p1].magnitude) meshV[p1] = meshVOriginal[p1] * target1;
 
             p1 = meshV.Length / 2;
+            spec1 = Math.Atan(Math.Abs(values.SpectrumLeft[meshV.Length / 2])) * intensity;
             meshV[p1] = Vector3.Lerp(meshV[p1], meshVOriginal[p1], fadeSpeed);
             target1 = (float) (deltaRadius * Math.Abs(values.SpectrumLeft[meshV.Length / 2]) + circleRadius);
             if ((meshVOriginal[p1] * target1).magnitude > meshV[p1].magnitude) meshV[p1] = meshVOriginal[p1] * target1;
 
             p1 = meshV.Length / 2 + 1;
+            spec1 = Math.Atan(Math.Abs(values.SpectrumLeft[meshV.Length / 2])) * intensity;
             meshV[p1] = Vector3.Lerp(meshV[p1], meshVOriginal[p1], fadeSpeed);
             target1 = (float) (deltaRadius * Math.Abs(values.SpectrumRight[meshV.Length / 2]) + circleRadius);
             if ((meshVOriginal[p1] * target1).magnitude > meshV[p1].magnitude) meshV[p1] = meshVOriginal[p1] * target1;
 
-            meshV[1] = 
+            meshV[1] =
                 meshV[meshV.Length - 1] = (meshV[1] + meshV[meshV.Length - 1]) / 2;
             meshV[meshV.Length / 2] =
                 meshV[meshV.Length / 2 + 1] = (meshV[meshV.Length / 2] + meshV[meshV.Length / 2 + 1]) / 2;
