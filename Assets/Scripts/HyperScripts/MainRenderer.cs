@@ -75,7 +75,7 @@ namespace HyperScripts
         internal static void ConnectCamera(Camera camera)
         {
             _mainCamera = camera;
-            _mainCamera.targetTexture = new RenderTexture(1920, 1080, 24, RenderTextureFormat.Default,
+            _mainCamera.targetTexture = new RenderTexture(2000, 2000, 24, RenderTextureFormat.Default,
                 RenderTextureReadWrite.Linear);
             _instance._imageDisplay.texture = _mainCamera.targetTexture;
             _mainCamera.enabled = false;
