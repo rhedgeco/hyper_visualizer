@@ -9,8 +9,10 @@ namespace HyperScripts
         private static MainRenderer _instance;
 
         private static Camera _mainCamera;
-        public static int Width => _mainCamera.targetTexture.width;
-        public static int Height => _mainCamera.targetTexture.height;
+        private static int _width = 2000;
+        private static int _height = 2000;
+        public static int Width => _width;
+        public static int Height => _height;
 
         [SerializeField] private RawImage _imageDisplay;
 
@@ -32,7 +34,7 @@ namespace HyperScripts
             {
                 cam.Render();
             }
-            catch (NullReferenceException)
+            catch (Exception)
             {
                 // do nothing
                 // Sometimes post processing errors out on initial load. That is okay.
@@ -47,7 +49,9 @@ namespace HyperScripts
 
         internal static void ResizeFrame(Vector2Int size)
         {
-            RenderTexture newTex = new RenderTexture(size.x, size.y, 24, RenderTextureFormat.Default,
+            _width = size.x;
+            _height = size.y;
+            RenderTexture newTex = new RenderTexture(Width, Height, 24, RenderTextureFormat.Default,
                 RenderTextureReadWrite.Linear);
             _mainCamera.targetTexture = newTex;
             _instance._imageDisplay.texture = _mainCamera.targetTexture;
@@ -66,10 +70,8 @@ namespace HyperScripts
 
         internal static void ConnectCamera(Camera camera)
         {
-            int width = _mainCamera.targetTexture.width;
-            int height = _mainCamera.targetTexture.height;
             _mainCamera = camera;
-            _mainCamera.targetTexture = new RenderTexture(width, height, 24, RenderTextureFormat.Default,
+            _mainCamera.targetTexture = new RenderTexture(Width, Height, 24, RenderTextureFormat.Default,
                 RenderTextureReadWrite.Linear);
             _instance._imageDisplay.texture = _mainCamera.targetTexture;
             _mainCamera.enabled = false;
@@ -80,7 +82,7 @@ namespace HyperScripts
         internal static void ConnectDefaultCamera(Camera camera)
         {
             _mainCamera = camera;
-            _mainCamera.targetTexture = new RenderTexture(2000, 2000, 24, RenderTextureFormat.Default,
+            _mainCamera.targetTexture = new RenderTexture(Width, Height, 24, RenderTextureFormat.Default,
                 RenderTextureReadWrite.Linear);
             _instance._imageDisplay.texture = _mainCamera.targetTexture;
             _mainCamera.enabled = false;
